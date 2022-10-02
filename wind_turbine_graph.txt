@@ -1,0 +1,341 @@
+fn wind_turbine_graph() -> () {
+    let mut graph = Graph::<&str, &str>::new();
+    let wind_turbine = graph.add_node("Wind Turbine");
+
+    let nacelle = graph.add_node("Nacelle");
+    let bearings = graph.add_node("Bearings");
+    let high_speed_coupling = graph.add_node("High-Speed Coupling");
+    let low_speed_shaft = graph.add_node("Low-Speed Shaft");
+    let yaw_drive = graph.add_node("Yaw Drive");
+    let hydraulics = graph.add_node("Hydraulics");
+    let cooling_system = graph.add_node("Cooling System");
+    let electronics = graph.add_node("Electronics"); //Catch-all for various electrical systems. E.g variable-speed electronics
+    let industrial_process_control = graph.add_node("Industrial Process Control");
+
+    let blade = graph.add_node("Blade");
+    let gearbox = graph.add_node("Gearbox");
+    let generator = graph.add_node("Generator");
+    let hub = graph.add_node("Hub");
+    let tower = graph.add_node("Tower");
+
+    let aluminium = graph.add_node("Aluminium");
+    let steel = graph.add_node("Steel");
+    let carbon_fibre = graph.add_node("Carbon Fibre");
+    let glass_reinforced_plastic = graph.add_node("Glass-Reinforced Plastic");
+    let copper = graph.add_node("Copper");
+    let prestressed_concrete = graph.add_node("Pre-Stressed Concrete");
+    let concrete = graph.add_node("Concrete");
+    let carbon_steel = graph.add_node("Carbon Steel");
+
+    let alumina = graph.add_node("Alumina");
+    let cryolite = graph.add_node("Cryolite");
+
+    let bauxite = graph.add_node("Bauxite");
+    let iron_ore = graph.add_node("Iron Ore");
+
+    let caustic_soda = graph.add_node("Caustic Soda (NaOH)");
+    let grout = graph.add_node("Grout");
+
+    let ground_lime = graph.add_node("Ground Lime");
+    let silica_glass = graph.add_node("Silica Glass");
+    let sodium_carbonate = graph.add_node("Sodium Carbonate");
+    let boron = graph.add_node("Boron");
+    let quartz = graph.add_node("Quartz");
+
+    let brine = graph.add_node("Brine");
+    let water = graph.add_node("Water");
+
+    let sodium_chloride = graph.add_node("Sodium Chloride");
+    let sodium_bicarbonate = graph.add_node("Sodium Bicarbonate");
+    let carbon_dioxide = graph.add_node("Carbon Dioxide");
+
+    let seawater = graph.add_node("Seawater");
+    let rock_salt = graph.add_node("Rock Salt");
+
+    let iron = graph.add_node("Iron");
+    let coal = graph.add_node("Coal");
+    let lime = graph.add_node("Lime");
+
+    let polyacrylonitrile = graph.add_node("Polyacrylonitrile");
+    let acrylonitrile = graph.add_node("Acrylonitrile");
+
+    let ethylene_cyanohydrin = graph.add_node("Ethylene Cyanohydrin");
+
+    let e_glass = graph.add_node("E-Glass (Borosilicate Glass)");
+    let s_glass = graph.add_node("S-Glass (Magnesium Alumino-Silicate)");
+    let epoxy_resin = graph.add_node("Epoxy Resin");
+
+    let sodium_silicate = graph.add_node("Sodium Silicate");
+    let magnesium_aluminate = graph.add_node("Magnesium Aluminate");
+
+    let polypropylene = graph.add_node("Polypropylene");
+    let air = graph.add_node("Air");
+    let ammonia = graph.add_node("Ammonia");
+
+    let bpa = graph.add_node("Bisphenol A (BPA)");
+    let epichlorohydrin = graph.add_node("Epichlorohydrin");
+
+    let dichlorohydrin = graph.add_node("Dichlorohydrin");
+    let glycerol = graph.add_node("Glycerol");
+
+    let allyl_chloride = graph.add_node("Allyl Chloride");
+
+    let triglyceride = graph.add_node("Triglyceride");
+
+    let acetone = graph.add_node("Acetone");
+    let phenol = graph.add_node("Phenol");
+    let cumene = graph.add_node("Cumene");
+
+    let benzene = graph.add_node("Benzene");
+
+    let propylene = graph.add_node("Propylene");
+    let naphtha = graph.add_node("Naphtha");
+    let propane = graph.add_node("Propane");
+
+    let pygas = graph.add_node("Pygas");
+    let crude_oil = graph.add_node("Crude Oil");
+
+    let nitrogen = graph.add_node("Nitrogen");
+    let hydrogen = graph.add_node("Hydrogen");
+
+    let methane = graph.add_node("Methane");
+    let natural_gas = graph.add_node("Natural Gas");
+
+    let limestone = graph.add_node("Limestone");
+
+    let copper_oxide = graph.add_node("Copper Oxide");
+    let copper_sulphide = graph.add_node("Copper Sulphide");
+    let copper_ore = graph.add_node("Copper Ore");
+
+    graph.extend_with_edges(&[
+        //Components of turbine
+        (blade, wind_turbine, MANUFACTURED),
+        (nacelle, wind_turbine, MANUFACTURED),
+        (gearbox, nacelle, MANUFACTURED),
+        (generator, nacelle, MANUFACTURED),
+        (hub, wind_turbine, MANUFACTURED),
+        (tower, wind_turbine, MANUFACTURED),
+    ]);
+
+    graph.extend_with_edges(&[
+        //Blade materials
+        (glass_reinforced_plastic, blade, MANUFACTURED),
+        (carbon_fibre, blade, MANUFACTURED),
+        (steel, blade, MANUFACTURED),
+    ]);
+
+    graph.extend_with_edges(&[
+        //Nacelle
+        (bearings, nacelle, MANUFACTURED),
+        (high_speed_coupling, nacelle, MANUFACTURED),
+        (low_speed_shaft, nacelle, MANUFACTURED),
+        (yaw_drive, nacelle, MANUFACTURED),
+        (hydraulics, nacelle, MANUFACTURED),
+        (cooling_system, nacelle, MANUFACTURED),
+        (electronics, nacelle, MANUFACTURED),
+        (industrial_process_control, nacelle, MANUFACTURED),
+    ]);
+
+    graph.extend_with_edges(&[(carbon_steel, low_speed_shaft, MANUFACTURED)]);
+
+    graph.extend_with_edges(&[
+        //Gearbox materials
+        (aluminium, gearbox, MANUFACTURED),
+        (steel, gearbox, MANUFACTURED),
+    ]);
+
+    graph.extend_with_edges(&[
+        //Generator materials
+        (copper, generator, MANUFACTURED),
+        (steel, generator, MANUFACTURED),
+    ]);
+
+    graph.extend_with_edges(&[
+        //Hub materials
+        (steel, hub, MANUFACTURED),
+    ]);
+
+    graph.extend_with_edges(&[
+        //Tower materials
+        (steel, tower, MANUFACTURED),
+        (prestressed_concrete, tower, MANUFACTURED),
+    ]);
+
+    //Aluminium
+    graph.extend_with_edges(&[
+        (alumina, aluminium, "Herault-Holt Process"),
+        (cryolite, aluminium, "Herault-Holt Process"),
+    ]);
+
+    //Alumina graph
+    graph.extend_with_edges(&[
+        (bauxite, alumina, "Bayer Process"),
+        (caustic_soda, alumina, "Bayer Process"),
+    ]);
+
+    //Caustic Soda (Sodium Hydroxide)
+    graph.extend_with_edges(&[(brine, caustic_soda, "Chlor-Alkali Process (Electrolysis)")]);
+
+    //Carbon fibre
+    graph.extend_with_edges(&[
+        (polyacrylonitrile, carbon_fibre, PROCESS_PLACEHOLDER),
+        (acrylonitrile, polyacrylonitrile, "Vinyl Polymerisation"),
+    ]);
+
+    //Lime
+    graph.extend_with_edges(&[(limestone, lime, "Calcination")]);
+
+    //Acrylonitrile
+    graph.extend_with_edges(&[
+        (polypropylene, acrylonitrile, "Ammoxidation"),
+        (air, acrylonitrile, "Ammoxidation"),
+        (ammonia, acrylonitrile, "Ammoxidation"),
+    ]);
+
+    //Polypropylene
+    graph.extend_with_edges(&[(propylene, polypropylene, "Polymerisation")]);
+
+    //Propylene
+    graph.extend_with_edges(&[
+        (naphtha, propylene, "Steam Cracking"),
+        (propane, propylene, "Propane Dehydrogenation"),
+    ]);
+
+    //Naphtha
+    graph.extend_with_edges(&[(crude_oil, naphtha, "Refining")]);
+
+    //Propane
+    graph.extend_with_edges(&[
+        (crude_oil, propane, "Associated Gasses"),
+        (natural_gas, propane, "Processed"),
+    ]);
+
+    //Ammonia
+    graph.extend_with_edges(&[
+        (nitrogen, ammonia, "Haber-Bosch Process"),
+        (hydrogen, ammonia, "Haber-Bosch Process"),
+    ]);
+
+    //Hydrogen
+    graph.extend_with_edges(&[(methane, hydrogen, "Steam-Methane Reforming")]);
+
+    //Methane
+    graph.extend_with_edges(&[(natural_gas, methane, PROCESS_PLACEHOLDER)]);
+
+    //Cumene
+    graph.extend_with_edges(&[
+        (propylene, cumene, "Alkylation"),
+        (benzene, cumene, "Alkylation"),
+    ]);
+
+    //Benzene
+    graph.extend_with_edges(&[(pygas, benzene, "Hydrotreating")]);
+
+    //Pygas
+    graph.extend_with_edges(&[
+        (naphtha, pygas, "Steam Cracking"),
+        (naphtha, pygas, "Catalytic Reforming"),
+        (propane, pygas, "Steam Cracking"),
+    ]);
+
+    //Pre-stressed concrete
+    graph.extend_with_edges(&[
+        (steel, prestressed_concrete, MANUFACTURED),
+        (grout, prestressed_concrete, MANUFACTURED),
+        (concrete, prestressed_concrete, MANUFACTURED),
+    ]);
+
+    //Steel
+    graph.extend_with_edges(&[
+        (iron, steel, "Blast Oxygen Steelmaking"),
+        (coal, steel, "Blast Oxygen Steelmaking"),
+        (lime, steel, "Blast Oxygen Steelmaking"),
+    ]);
+
+    //Iron
+    graph.extend_with_edges(&[(iron_ore, iron, MINED)]);
+
+    //Copper
+    graph.extend_with_edges(&[
+        (copper_oxide, copper, "Hydrometallurgy"),
+        (copper_sulphide, copper, "Pyrometallurgy"),
+        (copper_ore, copper_oxide, "Crushing"),
+        (copper_ore, copper_sulphide, "Crushing"),
+    ]);
+
+    //Glass-Reinforced Fibre
+    graph.extend_with_edges(&[
+        (e_glass, glass_reinforced_plastic, MANUFACTURED),
+        (s_glass, glass_reinforced_plastic, MANUFACTURED),
+        (epoxy_resin, glass_reinforced_plastic, MANUFACTURED),
+    ]);
+
+    //E-Glass
+    graph.extend_with_edges(&[
+        (boron, e_glass, PROCESS_PLACEHOLDER),
+        (silica_glass, e_glass, PROCESS_PLACEHOLDER),
+        (sodium_carbonate, e_glass, PROCESS_PLACEHOLDER),
+        (ground_lime, e_glass, PROCESS_PLACEHOLDER),
+    ]);
+
+    //S/S2-Glass
+    graph.extend_with_edges(&[
+        (magnesium_aluminate, s_glass, PROCESS_PLACEHOLDER),
+        (sodium_silicate, s_glass, PROCESS_PLACEHOLDER),
+    ]);
+
+    //Sodium Carbonate
+    graph.extend_with_edges(&[
+        (sodium_chloride, sodium_carbonate, "Solvay Process"),
+        (ammonia, sodium_carbonate, "Solvay Process"),
+        (limestone, sodium_carbonate, "Solvay Process"),
+    ]);
+
+    //Sodium Chloride
+    graph.extend_with_edges(&[
+        (seawater, sodium_chloride, "Evaporation"),
+        (rock_salt, sodium_chloride, MINED),
+        (brine, sodium_chloride, "Evaporation"),
+    ]);
+
+    //Silica glass
+    graph.extend_with_edges(&[(quartz, silica_glass, PROCESS_PLACEHOLDER)]);
+
+    //Epoxy resin
+    graph.extend_with_edges(&[
+        (bpa, epoxy_resin, PROCESS_PLACEHOLDER),
+        (epichlorohydrin, epoxy_resin, PROCESS_PLACEHOLDER),
+    ]);
+
+    //BPA
+    graph.extend_with_edges(&[
+        (acetone, bpa, PROCESS_PLACEHOLDER),
+        (phenol, bpa, PROCESS_PLACEHOLDER),
+        (cumene, acetone, PROCESS_PLACEHOLDER),
+        (cumene, phenol, PROCESS_PLACEHOLDER),
+    ]);
+
+    //Epichlorohydrin
+    graph.extend_with_edges(&[
+        (glycerol, epichlorohydrin, "Halogenation"),
+        (propylene, allyl_chloride, "Chlorination"),
+        (allyl_chloride, epichlorohydrin, "Hypochlorous Acid"),
+    ]);
+
+    //Glycerol
+    graph.extend_with_edges(&[
+        (triglyceride, glycerol, "Saponification"),
+        (caustic_soda, glycerol, "Saponification"),
+    ]);
+
+    //output to file
+    let mut file = std::fs::File::create("wind_turbine.txt").expect("Failed to create file");
+    let mut cloud_file =
+        std::fs::File::create(GENERATE_FILE_FOR_CLOUD).expect("Failed to create file");
+
+    cloud_file
+        .write_all(Dot::new(&graph).to_string().as_bytes())
+        .expect("Failed to export cloud file");
+    file.write_all(Dot::new(&graph).to_string().as_bytes())
+        .expect("Failed to export to text file");
+}
