@@ -1,3 +1,11 @@
+const GENERATE_FILE_FOR_CLOUD: &str =
+    r"G:\Cloud\Google Drive\Learning\Reading\Manufacturing\wind_turbine.txt";
+
+
+const PROCESS_PLACEHOLDER: &str = "Find name of process";
+const MANUFACTURED: &str = "Manufactured";
+const MINED: &str = "Mined";
+
 fn wind_turbine_graph() -> () {
     let mut graph = Graph::<&str, &str>::new();
     let wind_turbine = graph.add_node("Wind Turbine");

@@ -57,47 +57,24 @@ impl Default for Atom {
 }
 
 impl Atom {
-    pub fn diff_from_full_valence(&self) -> i32 {
-        let num_of_valence_electrons = self.calculate_valence_electrons();
-
-        let difference = 8 - num_of_valence_electrons;
-        difference
-    }
-
-    pub fn calculate_valence_electrons(&self) -> i32 {
-        let num_of_electrons = self.num_of_electrons;
-
-        let num_of_valence_electrons = match self.period {
-            1 => match self.atomic_num {
-                1 => num_of_electrons,
-                _ => 2,
-            },
-            2 => num_of_electrons - 2,
-            3 => num_of_electrons - 10,
-            4 => num_of_electrons - 18,
-            5 => num_of_electrons - 36,
-            6 => num_of_electrons - 54,
-            7 => num_of_electrons - 86,
-            _ => num_of_electrons - 118,
-        };
-
-        num_of_valence_electrons
-    }
-
-    pub fn electron_configuration(&self) {
+    //This outputs the number of valence electrons.
+    //Useful for determining reactions
+    pub fn valence_electrons(&self) -> i32 {
         let period = self.period;
-        let mut electron_configuration = "1s1";
-        let s_max = "s2";
-        let p_max = "p6";
-        let d_max = "d10";
-        let f_max = "f14";
+        let electron = self.num_of_electrons;
+        let max_valence: i32;
+        let valence: i32;
 
-        let electron_configuration = match period {
-            1 => {
-                electron_configuration = format!("{}{}{}", period, ENERGY_SUBLEVEL[0], self.atomic_num).as_str()
-            }
-            _ => electron_configuration = "1s1",
-        };
+        if period == 1 {
+            max_valence = 2;
+            valence = max_valence - electron
+        } else if period == 2 {
+            valence = electron - 2
+        }        
+        else {
+            valence = electron - 10
+        }
+        valence
     }
 }
 
