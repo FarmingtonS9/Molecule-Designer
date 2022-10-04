@@ -1,5 +1,7 @@
+
+
 use csv::Reader;
-use std::error::Error;
+use std::{error::Error, io};
 
 mod chemistry;
 use crate::chemistry::*;
@@ -8,7 +10,7 @@ const OCTET_NUMBER: u32 = 8;
 const ENERGY_SUBLEVEL: [&str; 4] = ["s", "p", "d", "f"];
 const PRINCIPLE_ENERGY_LEVEL: [i32; 4] = [1, 2, 3, 4];
 
-fn main() {
+fn main() -> Result<(), io::Error> {
     println!("Hello, world!");
     println!("I am going to create a material and process tracker.");
     println!("Why? Because I want to keep track of materials and their associated processes");
@@ -19,7 +21,6 @@ fn main() {
     let mut element_particles: Vec<Particles> = Vec::new();
 
     if let Ok(atom_list) = read_csv(file_path) {
-
         //Vec of Atom now works
         for atom in &atom_list {
             println!("{}", atom)
@@ -43,26 +44,15 @@ fn main() {
             })
         }
 
-        let hydrogen = atom_from_atom_collection("Hydrogen", &vector_of_elements, &atom_list);
-        assert_eq!(1, hydrogen.valence_electrons());
-
-        let helium = atom_from_atom_collection("Helium", &vector_of_elements, &atom_list);
-        assert_eq!(0, helium.valence_electrons());
-
-        let lithium = atom_from_atom_collection("Lithium", &vector_of_elements, &atom_list);
-        assert_eq!(1, lithium.valence_electrons());
-
-        let fluorine = atom_from_atom_collection("Fluorine", &vector_of_elements, &atom_list);
-        assert_eq!(7, fluorine.valence_electrons());
-
         let sodium = atom_from_atom_collection("Sodium", &vector_of_elements, &atom_list);
         assert_eq!(1, sodium.valence_electrons());
-
         let chlorine = atom_from_atom_collection("Chlorine", &vector_of_elements, &atom_list);
         assert_eq!(7, chlorine.valence_electrons());
-        
     }
 
+
+
+    Ok(())
 }
 
 fn read_csv(file_path: &str) -> Result<Vec<Atom>, Box<dyn Error>> {
@@ -86,7 +76,7 @@ fn find_element_in_atom_collection(element_name: &str, vector_of_elements: &Vec<
     let index = vector_of_elements
         .iter()
         .position(|r| r.as_str() == element_name)
-        .expect("Cannot find index");
+        .expect("Cannot find element name");
     index
 }
 

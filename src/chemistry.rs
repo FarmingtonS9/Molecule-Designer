@@ -1,7 +1,6 @@
 //Imports
-use std::fmt::Display;
-
 use serde::Deserialize;
+use std::fmt::Display;
 
 //Constants
 const ENERGY_SUBLEVEL: [&str; 4] = ["s", "p", "d", "f"];
@@ -59,22 +58,39 @@ impl Default for Atom {
 impl Atom {
     //This outputs the number of valence electrons.
     //Useful for determining reactions
+    //Needs to reworking
     pub fn valence_electrons(&self) -> i32 {
         let period = self.period;
         let electron = self.num_of_electrons;
         let max_valence: i32;
         let valence: i32;
 
-        if period == 1 {
-            max_valence = 2;
-            valence = max_valence - electron
-        } else if period == 2 {
-            valence = electron - 2
-        }        
-        else {
-            valence = electron - 10
+        match period {
+            1 => {
+                max_valence = 2;
+                valence = max_valence - electron
+            }
+            2 => valence = { electron - 2 },
+            3 => valence = { electron - 10 },
+            _ => todo!(),
         }
         valence
+    }
+
+    pub fn oxidation_states(&self) {
+        todo!()
+    }
+}
+
+#[derive(Debug)]
+pub struct Molecule {
+    name: String,
+    atom: Vec<Atom>,
+}
+
+impl Molecule {
+    fn create_molecule(&self) {
+        todo!()
     }
 }
 
