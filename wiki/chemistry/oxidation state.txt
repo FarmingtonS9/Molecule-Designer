@@ -1,0 +1,28 @@
+Oxidation State
+Oxidation state of an atom is the total number of electrons removed or added to an element in its present state.
+
+Rules 
+1. Oxidation state of an uncombined element is always zero. This applied regardless of the structure of the element: Xe, Cl2, S8 and large structures of carbon and silicon each have an oxidation state of zero.
+2. The sum of the oxidation state of all atoms or ions in a neutral compound is zero.
+3. The sum of the oxidation state of all atoms in an ion is equal to the charge on the ion.
+4. The more electronegative element in a substance is assigned a negative oxidation state, the less electronegative element is assigned a positive oxidation state.
+5. Some elements almost always have the same oxidation states in their compounds:
+- Group 1 metals -> +1
+- Group 2 metals -> +2
+- Oxygen -> -2, except peroxides and F20
+- Hydrogen -> +1, except metal hydrides
+- Fluorine -> -1
+- Chlorine -> -1, except compounds with F or O
+Exceptions
+- Metal hydride
+- Oxygen in Peroxide
+- Oxygen in F2O
+- Chlorine in compounds with fluorine or oxygen
+
+Naming compounds
+
+Stoichiometric reactions
+
+
+Reference
+https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Supplemental_Modules_(Analytical_Chemistry)/Electrochemistry/Redox_Chemistry/Oxidation_States_(Oxidation_Numbers)
