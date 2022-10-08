@@ -1,0 +1,17 @@
+Chemical bonds
+The connection of electrons between atoms is called a chemical bond.
+The bonding is an attractive force, and there are several types.
+Typically, bonding follows the octet rule, where elements prefer a full outer shell of eight electrons. There are, of course, exceptions to this rule and does not hold up for most elements.
+
+Types of bonds
+Primary bonds
+Covalent bonds
+Typically formed by non-metallic elements, electrons are shared between each atom. These bonds are normally described and modelled by molecular orbital theory.
+
+Ionic bonds
+
+Metallic bonds
+
+
+Reference
+https://chemistrytalk.org/what-is-a-chemical-bond/
