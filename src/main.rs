@@ -1,70 +1,41 @@
-
-
 use csv::Reader;
 use std::{error::Error, io};
 
 mod chemistry;
+mod tui;
 use crate::chemistry::*;
+use crate::tui::*;
 
 const OCTET_NUMBER: u32 = 8;
 const ENERGY_SUBLEVEL: [&str; 4] = ["s", "p", "d", "f"];
 const PRINCIPLE_ENERGY_LEVEL: [i32; 4] = [1, 2, 3, 4];
+const NOBLE_GAS_ELEMENT_NUMBER: [i32; 7] = [2, 10, 18, 36, 54, 86, 118];
 
-fn main() -> Result<(), io::Error> {
+fn main() -> core::result::Result<(), io::Error> {
     println!("Hello, world!");
-    println!("I am going to create a material and process tracker.");
-    println!("Why? Because I want to keep track of materials and their associated processes");
+    println!("I am going to create a Molecule Designer.");
+    println!("Why? Because I want to create molecules using the ideas of chemistry and physics. I want to do this to explore the fields of chemistry and physics. Eventually, I would love to keep track of materials and their associated processes.");
 
     let file_path = r"..\material-and-process-tracker\Periodic Table of Elements.csv";
 
-    let mut vector_of_elements: Vec<String> = Vec::new();
-    let mut element_particles: Vec<Particles> = Vec::new();
-
-    if let Ok(atom_list) = read_csv(file_path) {
-        //Vec of Atom now works
-        for atom in &atom_list {
-            println!("{}", atom)
-        }
-
-        let vector_atom = atom_list.clone();
-        for name in vector_atom {
-            vector_of_elements.push(name.element)
-        }
-        //println!("{:?}", element_names);
-
-        let number_of_particles_atom_collection = atom_list.clone();
-        for particles in number_of_particles_atom_collection {
-            let protons = particles.num_of_protons;
-            let neutrons = particles.num_of_neutrons;
-            let electrons = particles.num_of_electrons;
-            element_particles.push(Particles {
-                protons,
-                neutrons,
-                electrons,
-            })
-        }
-
-        let sodium = atom_from_atom_collection("Sodium", &vector_of_elements, &atom_list);
-        assert_eq!(1, sodium.valence_electrons());
-        let chlorine = atom_from_atom_collection("Chlorine", &vector_of_elements, &atom_list);
-        assert_eq!(7, chlorine.valence_electrons());
+    let atom_list = read_csv(file_path).expect("Could not create atom_list.");
+    for atom in atom_list {
+        println!("{}", atom)
     }
 
-
+    tui_setup();
 
     Ok(())
 }
 
 fn read_csv(file_path: &str) -> Result<Vec<Atom>, Box<dyn Error>> {
     let mut atoms: Vec<Atom> = Vec::new();
-    let mut atom: Atom;
-
-    let mut rdr = Reader::from_path(file_path).expect("Could not open csv file");
+    let mut rdr = Reader::from_path(file_path).expect("Could not open csv file.");
 
     for result in rdr.deserialize() {
         match result {
             Ok(atom) => atoms.push(atom),
-            Err(err) => panic!(),
+            Err(err) => println!("{}", err),
         };
     }
     Ok(atoms)

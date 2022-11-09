@@ -23,19 +23,22 @@ pub struct Atom {
     pub num_of_electrons: i32,
     #[serde(rename = "Period")]
     pub period: i32,
+    #[serde(rename = "Radioactive", deserialize_with = "csv::invalid_option")]
+    pub radioactive: Option<String>
 }
 
 impl Display for Atom {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "Element: {}, Symbol: {}, Atomic Number: {}, Protons: {}, Neutrons: {}, Electrons: {}",
+            "Element: {}, Symbol: {}, Atomic Number: {}, Protons: {}, Neutrons: {}, Electrons: {}, Radioactive: {:?}",
             self.element,
             self.symbol,
             self.atomic_num,
             self.num_of_protons,
             self.num_of_neutrons,
             self.num_of_electrons,
+            self.radioactive,
         )
     }
 }
@@ -51,6 +54,7 @@ impl Default for Atom {
             num_of_neutrons: 1,
             num_of_electrons: 1,
             period: 1,
+            radioactive: Some(String::from("None"))
         }
     }
 }
@@ -79,6 +83,10 @@ impl Atom {
 
     pub fn oxidation_states(&self) {
         todo!()
+    }
+
+    pub fn list() {
+        
     }
 }
 
