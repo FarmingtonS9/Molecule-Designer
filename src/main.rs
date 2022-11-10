@@ -3,8 +3,10 @@ use std::{error::Error, io};
 
 mod chemistry;
 mod tui;
+mod app;
 use crate::chemistry::*;
 use crate::tui::*;
+use crate::app::*;
 
 const OCTET_NUMBER: u32 = 8;
 const ENERGY_SUBLEVEL: [&str; 4] = ["s", "p", "d", "f"];
@@ -19,11 +21,10 @@ fn main() -> core::result::Result<(), io::Error> {
     let file_path = r"..\material-and-process-tracker\Periodic Table of Elements.csv";
 
     let atom_list = read_csv(file_path).expect("Could not create atom_list.");
-    for atom in atom_list {
-        println!("{}", atom)
+    match tui_entry(atom_list) {
+        Ok(()) => {},
+        Err(err) => println!("{:?}", err)
     }
-
-    tui_setup();
 
     Ok(())
 }

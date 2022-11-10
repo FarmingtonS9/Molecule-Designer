@@ -11,12 +11,17 @@ use tui::{
     style::Color,
     widgets::{
         canvas::{Canvas, Map, MapResolution},
-        Block, Borders,
+        Block, Borders, Paragraph, List, ListItem, ListState,
     },
     Frame, Terminal,
 };
 
-pub fn tui_setup() -> Result<(), io::Error> {
+use crate::{app::App, chemistry::Atom};
+
+pub fn tui_entry(data: Vec<Atom>) -> Result<(), io::Error> {
+    let data = data;
+    
+
     // setup terminal
     enable_raw_mode()?;
     let mut stdout = io::stdout();
@@ -24,7 +29,7 @@ pub fn tui_setup() -> Result<(), io::Error> {
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
-    let res = run_app(&mut terminal);
+    let res = run_app(&mut terminal, data);
 
     // restore terminal
     disable_raw_mode()?;
@@ -38,9 +43,25 @@ pub fn tui_setup() -> Result<(), io::Error> {
     Ok(())
 }
 
-fn run_app<B: Backend>(terminal: &mut Terminal<B>) -> io::Result<()> {
+fn run_app<B: Backend>(terminal: &mut Terminal<B>, data: Vec<Atom>) -> io::Result<()> {
+    let data = data;
+    let element = &data[1];
+
+    let terminal_bg = terminal_light::background_color()
+        .map(|c| c.rgb())
+        .map(|c| Color::Rgb(c.r, c.g, c.b))
+        .unwrap_or(Color::Gray);
+
     loop {
-        terminal.draw(|f| ui(f))?;
+        terminal.draw(|frame| {
+            let size = frame.size();
+            let chunks = Layout::default().direction(Direction::Vertical).margin(2).vertical_margin(2).constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref()).split(size);
+            let block = Block::default().title("Molecule Designer").borders(Borders::ALL);
+            let paragraph = Paragraph::new(element.element.clone());
+
+            frame.render_widget(block, size);
+            frame.render_widget(paragraph, chunks[0])
+        })?;
 
         if let Event::Key(key) = event::read()? {
             if let KeyCode::Char('q') = key.code {
@@ -48,38 +69,4 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>) -> io::Result<()> {
             }
         }
     }
-}
-
-fn ui<B: Backend>(f: &mut Frame<B>) {
-    let canvas = Canvas::default()
-        .block(
-            Block::default()
-                .borders(Borders::ALL)
-                .title("Molecule Designer")
-                .title_alignment(Alignment::Center),
-        )
-        .paint(|ctx| {
-            ctx.draw(&Map {
-                color: Color::White,
-                resolution: MapResolution::High,
-            })
-        });
-    f.render_widget(canvas, f.size());
-
-    let chunks = Layout::default()
-        .direction(Direction::Horizontal)
-        .constraints(
-            [
-                Constraint::Percentage(10),
-                Constraint::Percentage(80),
-                Constraint::Percentage(10),
-            ]
-            .as_ref(),
-        )
-        .split(f.size());
-
-    let block = Block::default().title("Element").borders(Borders::ALL);
-    f.render_widget(block, chunks[0]);
-    let block = Block::default().title("Particle").borders(Borders::ALL);
-    f.render_widget(block, chunks[2]);
 }

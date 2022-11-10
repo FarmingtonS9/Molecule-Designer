@@ -16,3 +16,4 @@ tui = { version = "0", default-features = false, features = ['crossterm', 'serde
 thiserror = "1"
 modular = "1"
 crossterm = "0"
+terminal-light = "1"
