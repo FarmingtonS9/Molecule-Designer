@@ -24,7 +24,7 @@ pub struct Atom {
     #[serde(rename = "Period")]
     pub period: i32,
     #[serde(rename = "Radioactive", deserialize_with = "csv::invalid_option")]
-    pub radioactive: Option<String>
+    pub radioactive: Option<String>,
 }
 
 impl Display for Atom {
@@ -54,15 +54,14 @@ impl Default for Atom {
             num_of_neutrons: 1,
             num_of_electrons: 1,
             period: 1,
-            radioactive: Some(String::from("None"))
+            radioactive: Some(String::from("None")),
         }
     }
 }
 
 impl Atom {
     //This outputs the number of valence electrons.
-    //Useful for determining reactions
-    //Needs to reworking
+    //Works for now, may need to be updated in future
     pub fn valence_electrons(&self) -> i32 {
         let period = self.period;
         let electron = self.num_of_electrons;
@@ -74,9 +73,13 @@ impl Atom {
                 max_valence = 2;
                 valence = max_valence - electron
             }
-            2 => valence = { electron - 2 },
-            3 => valence = { electron - 10 },
+            2 => valence = { 10 - electron },
+            3 => valence = { 18 - electron },
             _ => todo!(),
+        }
+        //If number of electrons in outer shell is greater than 4, the number of valence electrons goes down.
+        if valence > 4 {
+            return valence - (valence - 4) * 2;
         }
         valence
     }
@@ -85,20 +88,25 @@ impl Atom {
         todo!()
     }
 
-    pub fn list() {
-        
-    }
+    pub fn list() {}
 }
 
 #[derive(Debug)]
 pub struct Molecule {
     name: String,
-    atom: Vec<Atom>,
+    formula: String,
 }
 
 impl Molecule {
-    fn create_molecule(&self) {
-        todo!()
+    fn new
+    fn create_molecule(&self, elem1: &Atom, elem2: &Atom) -> Molecule {
+        let elem1_symbol = &elem1.symbol;
+        let elem1_valence = &elem1.valence_electrons();
+    
+        let elem2_symbol = &elem2.symbol;
+        let elem2_valence = &elem2.valence_electrons();
+    
+        println!("{}_{}{}_{}", elem1_symbol, elem2_valence, elem2_symbol, elem1_valence);
     }
 }
 

@@ -1,12 +1,11 @@
 use csv::Reader;
 use std::{error::Error, io};
 
+mod app;
 mod chemistry;
 mod tui;
-mod app;
 use crate::chemistry::*;
 use crate::tui::*;
-use crate::app::*;
 
 const OCTET_NUMBER: u32 = 8;
 const ENERGY_SUBLEVEL: [&str; 4] = ["s", "p", "d", "f"];
@@ -18,14 +17,27 @@ fn main() -> core::result::Result<(), io::Error> {
     println!("I am going to create a Molecule Designer.");
     println!("Why? Because I want to create molecules using the ideas of chemistry and physics. I want to do this to explore the fields of chemistry and physics. Eventually, I would love to keep track of materials and their associated processes.");
 
-    let file_path = r"..\material-and-process-tracker\Periodic Table of Elements.csv";
-
+    let file_path = r"Periodic Table of Elements.csv";
     let atom_list = read_csv(file_path).expect("Could not create atom_list.");
-    match tui_entry(atom_list) {
-        Ok(()) => {},
-        Err(err) => println!("{:?}", err)
-    }
 
+    /* TODO. Building a tui interface
+        match tui_entry(atom_list) {
+            Ok(()) => {},
+            Err(err) => println!("{:?}", err)
+        }
+    */
+    let input = 1;
+
+    let element = &atom_list[input - 1];
+    let valence_electrons = element.valence_electrons();
+    println!("Element: {}, Valence electrons: {}", &element.element, valence_electrons);
+
+    let aluminium = &atom_list[12];
+    let oxygen = &atom_list[7];
+
+    println!("Element 1: {}, Element 2: {}", &aluminium.element, &oxygen.element);
+
+    create_molecule(aluminium, oxygen);
     Ok(())
 }
 
@@ -40,6 +52,16 @@ fn read_csv(file_path: &str) -> Result<Vec<Atom>, Box<dyn Error>> {
         };
     }
     Ok(atoms)
+}
+
+fn create_molecule(element1: &Atom, element2: &Atom) {
+    let elem1_symbol = &element1.symbol;
+    let elem1_valence = &element1.valence_electrons();
+
+    let elem2_symbol = &element2.symbol;
+    let elem2_valence = &element2.valence_electrons();
+
+    println!("{}_{}{}_{}", elem1_symbol, elem2_valence, elem2_symbol, elem1_valence);
 }
 
 fn find_element_in_atom_collection(element_name: &str, vector_of_elements: &Vec<String>) -> usize {

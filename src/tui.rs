@@ -11,16 +11,15 @@ use tui::{
     style::Color,
     widgets::{
         canvas::{Canvas, Map, MapResolution},
-        Block, Borders, Paragraph, List, ListItem, ListState,
+        Block, Borders, List, ListItem, ListState, Paragraph,
     },
     Frame, Terminal,
 };
 
-use crate::{app::App, chemistry::Atom};
+use crate::{chemistry::Atom};
 
 pub fn tui_entry(data: Vec<Atom>) -> Result<(), io::Error> {
     let data = data;
-    
 
     // setup terminal
     enable_raw_mode()?;
@@ -55,8 +54,15 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, data: Vec<Atom>) -> io::Resul
     loop {
         terminal.draw(|frame| {
             let size = frame.size();
-            let chunks = Layout::default().direction(Direction::Vertical).margin(2).vertical_margin(2).constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref()).split(size);
-            let block = Block::default().title("Molecule Designer").borders(Borders::ALL);
+            let chunks = Layout::default()
+                .direction(Direction::Vertical)
+                .margin(2)
+                .vertical_margin(2)
+                .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
+                .split(size);
+            let block = Block::default()
+                .title("Molecule Designer")
+                .borders(Borders::ALL);
             let paragraph = Paragraph::new(element.element.clone());
 
             frame.render_widget(block, size);
@@ -68,5 +74,53 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, data: Vec<Atom>) -> io::Resul
                 return Ok(());
             }
         }
+    }
+}
+
+struct App {
+    items: StatefulList<Vec<Atom>>,
+}
+
+struct StatefulList<T> {
+    state: ListState,
+    items: Vec<T>,
+}
+
+impl<T> StatefulList<T> {
+    fn with_items(items: Vec<T>) -> StatefulList<T> {
+        StatefulList {
+            state: ListState::default(),
+            items,
+        }
+    }
+
+    fn next(&mut self) {
+        let i = match self.state.selected() {
+            Some(i) => {
+                if i >= self.items.len() - 1 {
+                    0
+                } else {
+                    i + 1
+                }
+            }
+            None => 0,
+        };
+    }
+
+    fn previous(&mut self) {
+        let i = match self.state.selected() {
+            Some(i) => {
+                if i==0 {
+                    self.items.len() - 1
+                } else {
+                    i - 1
+                }
+            }
+            None => 0,
+        };
+    }
+
+    fn unselect(&mut self) {
+        self.state.select(None)
     }
 }
