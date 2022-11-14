@@ -5,6 +5,8 @@ use std::fmt::Display;
 //Constants
 const ENERGY_SUBLEVEL: [&str; 4] = ["s", "p", "d", "f"];
 
+//Traits
+
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd)]
 pub struct Atom {
     #[serde(rename = "Element")]
@@ -84,6 +86,32 @@ impl Atom {
         valence
     }
 
+    //Still to decide, whether to create molecules through Atom or Molecule structs
+    pub fn create_molecule(elem1: &Self, elem2: &Atom) -> Molecule {
+        let elem1_symbol = &elem1.symbol;
+        let elem1_valence = &elem1.valence_electrons();
+
+        let elem2_symbol = &elem2.symbol;
+        let elem2_valence = &elem2.valence_electrons();
+
+        let mut formula = String::new();
+
+        if elem1_symbol == elem2_symbol {
+            formula = format!("{}_{}", &elem1_symbol, *elem1_valence + *elem2_valence);
+        } else {
+            formula = format!(
+                "{}_{}:{}_{}",
+                &elem1_symbol, &elem2_valence, &elem2_symbol, &elem1_valence
+            );
+        }
+        let molecule_name = format!("{}-{}\n", &elem1.element, &elem2.element);
+
+        Molecule {
+            name: molecule_name,
+            formula: formula,
+        }
+    }
+
     pub fn oxidation_states(&self) {
         todo!()
     }
@@ -93,20 +121,45 @@ impl Atom {
 
 #[derive(Debug)]
 pub struct Molecule {
-    name: String,
-    formula: String,
+    pub name: String,
+    pub formula: String,
 }
 
 impl Molecule {
-    fn new
-    fn create_molecule(&self, elem1: &Atom, elem2: &Atom) -> Molecule {
+    pub fn new(name: String, formula: String) -> Self {
+        Molecule { name, formula }
+    }
+
+    //Still to decide, whether to create molecules through Atom or Molecule structs
+    pub fn create_molecule(elem1: &Atom, elem2: &Atom) -> Molecule {
         let elem1_symbol = &elem1.symbol;
         let elem1_valence = &elem1.valence_electrons();
-    
+
         let elem2_symbol = &elem2.symbol;
         let elem2_valence = &elem2.valence_electrons();
-    
-        println!("{}_{}{}_{}", elem1_symbol, elem2_valence, elem2_symbol, elem1_valence);
+
+        let mut formula = String::new();
+
+        if elem1_symbol == elem2_symbol {
+            formula = format!("{}_{}", &elem1_symbol, *elem1_valence + *elem2_valence);
+        } else {
+            formula = format!(
+                "{}_{}:{}_{}",
+                &elem1_symbol, &elem2_valence, &elem2_symbol, &elem1_valence
+            );
+        }
+        let molecule_name = format!("{}-{}\n", &elem1.element, &elem2.element);
+
+        Molecule {
+            name: molecule_name,
+            formula: formula,
+        }
+    }
+}
+
+impl Display for Molecule {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "{}{}", self.name, self.formula)
     }
 }
 

@@ -30,14 +30,29 @@ fn main() -> core::result::Result<(), io::Error> {
 
     let element = &atom_list[input - 1];
     let valence_electrons = element.valence_electrons();
-    println!("Element: {}, Valence electrons: {}", &element.element, valence_electrons);
+    println!(
+        "Element: {}, Valence electrons: {}",
+        &element.element, valence_electrons
+    );
 
     let aluminium = &atom_list[12];
     let oxygen = &atom_list[7];
 
-    println!("Element 1: {}, Element 2: {}", &aluminium.element, &oxygen.element);
+    println!(
+        "Element 1: {}, Element 2: {}\n",
+        &aluminium.element, &oxygen.element
+    );
 
-    create_molecule(aluminium, oxygen);
+    let alum_oxide = Atom::create_molecule(aluminium, oxygen);
+    println!("{}", alum_oxide);
+
+    let alum_oxide2 = Molecule::create_molecule(aluminium, oxygen);
+    println!("{}", alum_oxide2);
+
+    let hydrogen = &atom_list[0];
+    let diatomic_hydrogen = Molecule::create_molecule(hydrogen, hydrogen);
+    println!("{}", diatomic_hydrogen);
+
     Ok(())
 }
 
@@ -52,16 +67,6 @@ fn read_csv(file_path: &str) -> Result<Vec<Atom>, Box<dyn Error>> {
         };
     }
     Ok(atoms)
-}
-
-fn create_molecule(element1: &Atom, element2: &Atom) {
-    let elem1_symbol = &element1.symbol;
-    let elem1_valence = &element1.valence_electrons();
-
-    let elem2_symbol = &element2.symbol;
-    let elem2_valence = &element2.valence_electrons();
-
-    println!("{}_{}{}_{}", elem1_symbol, elem2_valence, elem2_symbol, elem1_valence);
 }
 
 fn find_element_in_atom_collection(element_name: &str, vector_of_elements: &Vec<String>) -> usize {
