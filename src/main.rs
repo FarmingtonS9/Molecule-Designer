@@ -1,4 +1,5 @@
 use csv::Reader;
+use petgraph::data::Element;
 use std::{error::Error, io};
 
 mod app;
@@ -42,6 +43,10 @@ fn main() -> core::result::Result<(), io::Error> {
         "Element 1: {}, Element 2: {}\n",
         &aluminium.element, &oxygen.element
     );
+
+    for element in atom_list.iter() {
+        dbg!("{:?}", element);
+    }
 
     let alum_oxide = Atom::create_molecule(aluminium, oxygen);
     println!("{}", alum_oxide);
