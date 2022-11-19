@@ -45,7 +45,7 @@ fn main() -> core::result::Result<(), io::Error> {
     );
 
     for element in atom_list.iter() {
-        dbg!("{:?}", element);
+        println!("{}", element);
     }
 
     let alum_oxide = Atom::create_molecule(aluminium, oxygen);

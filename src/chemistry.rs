@@ -56,14 +56,15 @@ impl Default for Atom {
             num_of_neutrons: 1,
             num_of_electrons: 1,
             period: 1,
-            radioactive: Some(String::from("None")),
+            radioactive: Some("No".to_string()),
         }
     }
 }
 
 impl Atom {
     //This outputs the number of valence electrons.
-    //Works for now, may need to be updated in future
+    //Works for now, may need to be updated in future.
+    //A future update will focus on the balance of charges.
     pub fn valence_electrons(&self) -> i32 {
         let period = self.period;
         let electron = self.num_of_electrons;
@@ -79,14 +80,14 @@ impl Atom {
             3 => valence = { 18 - electron },
             _ => todo!(),
         }
-        //If number of electrons in outer shell is greater than 4, the number of valence electrons goes down.
+        //If number of electrons in outer shell is greater than 4, the number of valence electrons "steps" down.
         if valence > 4 {
             return valence - (valence - 4) * 2;
         }
         valence
     }
 
-    //Still to decide, whether to create molecules through Atom or Molecule structs
+    //Still to decide, whether to create molecules through Atom or Molecule structs, or do something funky with traits
     pub fn create_molecule(elem1: &Self, elem2: &Atom) -> Molecule {
         let elem1_symbol = &elem1.symbol;
         let elem1_valence = &elem1.valence_electrons();
