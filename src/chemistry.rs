@@ -61,6 +61,7 @@ impl Default for Atom {
     }
 }
 
+//Public associated functions
 impl Atom {
     //This outputs the number of valence electrons.
     //Works for now, may need to be updated in future.
@@ -119,6 +120,9 @@ impl Atom {
 
     pub fn list() {}
 }
+
+//Private associated functions
+impl Atom {}
 
 #[derive(Debug)]
 pub struct Molecule {
