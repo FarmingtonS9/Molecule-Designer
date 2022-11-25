@@ -1,12 +1,9 @@
 use csv::Reader;
-use petgraph::data::Element;
 use std::{error::Error, io};
 
 mod app;
 mod chemistry;
-mod tui;
 use crate::chemistry::*;
-use crate::tui::*;
 
 const OCTET_NUMBER: u32 = 8;
 const ENERGY_SUBLEVEL: [&str; 4] = ["s", "p", "d", "f"];
@@ -19,7 +16,7 @@ fn main() -> core::result::Result<(), io::Error> {
     println!("Why? Because I want to create molecules using the ideas of chemistry and physics. I want to do this to explore the fields of chemistry and physics. Eventually, I would love to keep track of materials and their associated processes.");
 
     let file_path = r"Periodic Table of Elements.csv";
-    let atom_list = read_csv(file_path).expect("Could not create atom_list.");
+    let element_list = read_csv(file_path).expect("Could not create atom_list.");
 
     /* TODO. Building a tui interface
         match tui_entry(atom_list) {
@@ -29,40 +26,40 @@ fn main() -> core::result::Result<(), io::Error> {
     */
     let input = 1;
 
-    let element = &atom_list[input - 1];
+    let element = &element_list[input - 1];
     let valence_electrons = element.valence_electrons();
     println!(
         "Element: {}, Valence electrons: {}",
         &element.element, valence_electrons
     );
 
-    let aluminium = &atom_list[12];
-    let oxygen = &atom_list[7];
+    let aluminium = &element_list[12];
+    let oxygen = &element_list[7];
 
     println!(
         "Element 1: {}, Element 2: {}\n",
         &aluminium.element, &oxygen.element
     );
 
-    for element in atom_list.iter() {
+    for element in element_list.iter() {
         println!("{}", element);
     }
 
-    let alum_oxide = Atom::create_molecule(aluminium, oxygen);
+    let alum_oxide = Element::create_molecule(aluminium, oxygen);
     println!("{}", alum_oxide);
 
     let alum_oxide2 = Molecule::create_molecule(aluminium, oxygen);
     println!("{}", alum_oxide2);
 
-    let hydrogen = &atom_list[0];
+    let hydrogen = &element_list[0];
     let diatomic_hydrogen = Molecule::create_molecule(hydrogen, hydrogen);
     println!("{}", diatomic_hydrogen);
 
     Ok(())
 }
 
-fn read_csv(file_path: &str) -> Result<Vec<Atom>, Box<dyn Error>> {
-    let mut atoms: Vec<Atom> = Vec::new();
+fn read_csv(file_path: &str) -> Result<Vec<Element>, Box<dyn Error>> {
+    let mut atoms: Vec<Element> = Vec::new();
     let mut rdr = Reader::from_path(file_path).expect("Could not open csv file.");
 
     for result in rdr.deserialize() {
@@ -87,8 +84,8 @@ fn find_element_in_atom_collection(element_name: &str, vector_of_elements: &Vec<
 fn atom_from_atom_collection<'a>(
     element_name: &'a str,
     vector_of_elements: &'a Vec<String>,
-    atom_list: &'a Vec<Atom>,
-) -> &'a Atom {
+    atom_list: &'a Vec<Element>,
+) -> &'a Element {
     let element_index = find_element_in_atom_collection(element_name, vector_of_elements);
     let atom = &atom_list[element_index];
     atom

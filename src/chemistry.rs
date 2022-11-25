@@ -5,10 +5,12 @@ use std::fmt::Display;
 //Constants
 const ENERGY_SUBLEVEL: [&str; 4] = ["s", "p", "d", "f"];
 
-//Traits
+//Traits (shared behaviours/properties)
+pub trait Atom {}
 
+//Structs (data)
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd)]
-pub struct Atom {
+pub struct Element {
     #[serde(rename = "Element")]
     pub element: String,
     #[serde(rename = "Symbol")]
@@ -25,27 +27,24 @@ pub struct Atom {
     pub num_of_electrons: i32,
     #[serde(rename = "Period")]
     pub period: i32,
-    #[serde(rename = "Radioactive", deserialize_with = "csv::invalid_option")]
-    pub radioactive: Option<String>,
 }
 
-impl Display for Atom {
+impl Display for Element {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "Element: {}, Symbol: {}, Atomic Number: {}, Protons: {}, Neutrons: {}, Electrons: {}, Radioactive: {:?}",
+            "Element: {}, Symbol: {}, Atomic Number: {}, Protons: {}, Neutrons: {}, Electrons: {}",
             self.element,
             self.symbol,
             self.atomic_num,
             self.num_of_protons,
             self.num_of_neutrons,
             self.num_of_electrons,
-            self.radioactive,
         )
     }
 }
 
-impl Default for Atom {
+impl Default for Element {
     fn default() -> Self {
         Self {
             element: String::from("Default Atom"),
@@ -56,13 +55,16 @@ impl Default for Atom {
             num_of_neutrons: 1,
             num_of_electrons: 1,
             period: 1,
-            radioactive: Some("No".to_string()),
         }
     }
 }
 
 //Public associated functions
-impl Atom {
+impl Element {
+    //
+    pub fn calc_charge(&self) -> i32 {
+        self.num_of_protons - self.num_of_electrons
+    }
     //This outputs the number of valence electrons.
     //Works for now, may need to be updated in future.
     //A future update will focus on the balance of charges.
@@ -89,7 +91,7 @@ impl Atom {
     }
 
     //Still to decide, whether to create molecules through Atom or Molecule structs, or do something funky with traits
-    pub fn create_molecule(elem1: &Self, elem2: &Atom) -> Molecule {
+    pub fn create_molecule(elem1: &Self, elem2: &Element) -> Molecule {
         let elem1_symbol = &elem1.symbol;
         let elem1_valence = &elem1.valence_electrons();
 
@@ -122,7 +124,7 @@ impl Atom {
 }
 
 //Private associated functions
-impl Atom {}
+impl Element {}
 
 #[derive(Debug)]
 pub struct Molecule {
@@ -136,7 +138,7 @@ impl Molecule {
     }
 
     //Still to decide, whether to create molecules through Atom or Molecule structs
-    pub fn create_molecule(elem1: &Atom, elem2: &Atom) -> Molecule {
+    pub fn create_molecule(elem1: &Element, elem2: &Element) -> Molecule {
         let elem1_symbol = &elem1.symbol;
         let elem1_valence = &elem1.valence_electrons();
 
@@ -183,4 +185,12 @@ impl Display for Particles {
             self.protons, self.neutrons, self.electrons
         )
     }
+}
+
+//Enums
+pub enum Phase {
+    Solid,
+    Liquid,
+    Gas,
+    Plasma,
 }
