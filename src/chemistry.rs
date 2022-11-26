@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 //Imports
 use serde::Deserialize;
 use std::fmt::Display;
@@ -6,7 +8,10 @@ use std::fmt::Display;
 const ENERGY_SUBLEVEL: [&str; 4] = ["s", "p", "d", "f"];
 
 //Traits (shared behaviours/properties)
-pub trait Atom {}
+pub trait Atom {
+    //Electron configuration of atom
+    fn electronic_structure() {}
+}
 
 //Structs (data)
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd)]
@@ -59,15 +64,19 @@ impl Default for Element {
     }
 }
 
+//To complete
+impl Atom for Element {}
+
 //Public associated functions
 impl Element {
-    //
+    //Used to determine if the element is electrically charged
+    //I.e if an element binds to another atom, it may have lost/gained an electron, therefore it is now electrically charged (becomes an ion)
     pub fn calc_charge(&self) -> i32 {
         self.num_of_protons - self.num_of_electrons
     }
     //This outputs the number of valence electrons.
     //Works for now, may need to be updated in future.
-    //A future update will focus on the balance of charges.
+    //Likely, will focus on balance of charges.
     pub fn valence_electrons(&self) -> i32 {
         let period = self.period;
         let electron = self.num_of_electrons;
@@ -100,14 +109,18 @@ impl Element {
 
         let mut formula = String::new();
 
-        if elem1_symbol == elem2_symbol {
-            formula = format!("{}_{}", &elem1_symbol, *elem1_valence + *elem2_valence);
-        } else {
-            formula = format!(
-                "{}_{}:{}_{}",
-                &elem1_symbol, &elem2_valence, &elem2_symbol, &elem1_valence
-            );
+        match elem1_symbol {
+            elem2_symbol => {
+                formula = format!("{}_{}", &elem1_symbol, *elem1_valence + *elem2_valence)
+            }
+            _ => {
+                formula = format!(
+                    "{}_{}:{}_{}",
+                    &elem1_symbol, &elem2_valence, &elem2_symbol, &elem1_valence
+                )
+            }
         }
+
         let molecule_name = format!("{}-{}\n", &elem1.element, &elem2.element);
 
         Molecule {
@@ -121,6 +134,19 @@ impl Element {
     }
 
     pub fn list() {}
+}
+
+//Impl for different representations of electron configurations
+impl Element {
+    //Lewis dot diagram for element.
+    //Make this associated function more robust
+    pub fn lewis_dot_symbol(&self) -> String {
+        let dot = "•";
+        let colon = ":";
+
+        let diagram = format!("{}{}{}", dot, &self.symbol, dot);
+        diagram
+    }
 }
 
 //Private associated functions
@@ -137,7 +163,7 @@ impl Molecule {
         Molecule { name, formula }
     }
 
-    //Still to decide, whether to create molecules through Atom or Molecule structs
+    //Still to decide, whether to create molecules through Atom (currently a trait) or Molecule structs
     pub fn create_molecule(elem1: &Element, elem2: &Element) -> Molecule {
         let elem1_symbol = &elem1.symbol;
         let elem1_valence = &elem1.valence_electrons();

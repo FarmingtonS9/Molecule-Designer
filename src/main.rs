@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 use csv::Reader;
 use std::{error::Error, io};
 
@@ -18,7 +20,7 @@ fn main() -> core::result::Result<(), io::Error> {
     let file_path = r"Periodic Table of Elements.csv";
     let element_list = read_csv(file_path).expect("Could not create atom_list.");
 
-    /* TODO. Building a tui interface
+    /* TODO. Building a tui/gui interface
         match tui_entry(atom_list) {
             Ok(()) => {},
             Err(err) => println!("{:?}", err)
@@ -55,23 +57,27 @@ fn main() -> core::result::Result<(), io::Error> {
     let diatomic_hydrogen = Molecule::create_molecule(hydrogen, hydrogen);
     println!("{}", diatomic_hydrogen);
 
+    let helium = &element_list[1];
+    print!("{}", helium.lewis_dot_symbol());
+
     Ok(())
 }
 
 fn read_csv(file_path: &str) -> Result<Vec<Element>, Box<dyn Error>> {
-    let mut atoms: Vec<Element> = Vec::new();
+    let mut elements: Vec<Element> = Vec::new();
     let mut rdr = Reader::from_path(file_path).expect("Could not open csv file.");
 
     for result in rdr.deserialize() {
         match result {
-            Ok(atom) => atoms.push(atom),
+            Ok(atom) => elements.push(atom),
             Err(err) => println!("{}", err),
         };
     }
-    Ok(atoms)
+    Ok(elements)
 }
 
-fn find_element_in_atom_collection(element_name: &str, vector_of_elements: &Vec<String>) -> usize {
+//Finds index of element
+fn find_index_of_element(element_name: &str, vector_of_elements: &Vec<String>) -> usize {
     let element_name = element_name.to_string();
     let vector_of_elements = vector_of_elements;
     let index = vector_of_elements
@@ -81,12 +87,12 @@ fn find_element_in_atom_collection(element_name: &str, vector_of_elements: &Vec<
     index
 }
 
-fn atom_from_atom_collection<'a>(
+fn find_atom_using_index<'a>(
     element_name: &'a str,
     vector_of_elements: &'a Vec<String>,
     atom_list: &'a Vec<Element>,
 ) -> &'a Element {
-    let element_index = find_element_in_atom_collection(element_name, vector_of_elements);
+    let element_index = find_index_of_element(element_name, vector_of_elements);
     let atom = &atom_list[element_index];
     atom
 }
