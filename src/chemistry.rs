@@ -142,9 +142,10 @@ impl Element {
     //Make this associated function more robust
     pub fn lewis_dot_symbol(&self) -> String {
         let dot = "•";
+        let dots = "••";
         let colon = ":";
 
-        let diagram = format!("{}{}{}", dot, &self.symbol, dot);
+        let diagram = format!("{:>2}\n{}{}{}\n{:>2}", dot, dot, &self.symbol, dot, dot);
         diagram
     }
 }

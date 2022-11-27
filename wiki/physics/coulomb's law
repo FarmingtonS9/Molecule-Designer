@@ -1,0 +1,8 @@
+Like charges repel, opposite charges attract.
+Acts upon points of charge.
+Obeys the inverse square law. [1/r**2]
+F = (kq1 * q2)/r**2. Note: This is similar to the equation calculating the force of gravity.
+F = (q1 * q2)/4 * pi * E0 * r**2
+k = 1/(4 * pi * E0), roughly 9e9N • m**2 / C**2 [Coulomb's constant]
+E0 = permmitivity
+
