@@ -5,8 +5,13 @@ use serde::Deserialize;
 use std::fmt::Display;
 
 //Constants
+//Private
 const SHELL: [&str; 4] = ["K", "L", "M", "N"];
-const ORBITAL: [&str; 4] = ["s", "p", "d", "f"];
+const PRINCIPAL_QUANTUM_NUM: [i32; 4] = [1, 2, 3, 4];
+const ORBITAL_SYMBOLS: [&str; 4] = ["s", "p", "d", "f"];
+const ORBITAL_NUM: [i32; 4] = [1, 3, 5, 7];
+
+//Public
 
 //Traits (shared behaviours/properties)
 pub trait Atom {
@@ -15,7 +20,7 @@ pub trait Atom {
 }
 
 //Structs (data)
-//Find the minimum amount of information needed for other information to derived from.
+//Find the minimum amount of information needed for other information to be derived from.
 //E.g Atomic Number (Z) can be derived directly from the number of protons.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd)]
 pub struct Element {
@@ -37,6 +42,7 @@ pub struct Element {
     pub period: i32,
 }
 
+//Try to use RawElement to build an Element struct. I.e, deriving values for fields from raw data.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd)]
 struct RawElement {
     #[serde(rename = "Element")]
@@ -162,17 +168,60 @@ impl Element {
     //Lewis dot diagram for element.
     //Make this associated function more robust
     pub fn lewis_dot_symbol(&self) -> String {
-        let dot = "•";
-        let dots = "••";
-        let colon = ":";
+        let dot = ["•", "••", ":"];
 
-        let diagram = format!("{:>2}\n{}{}{}\n{:>2}", dot, dot, &self.symbol, dot, dot);
+        let diagram = format!(
+            "{:>2}\n{}{}{}\n{:>2}",
+            dot[0], dot[0], &self.symbol, dot[0], dot[0]
+        );
         diagram
     }
+
+    pub fn orbital_diagram() {}
+
+    pub fn spdf_notation() {}
+
+    pub fn noble_gas_notation() {}
 }
 
 //Private associated functions
-impl Element {}
+impl Element {
+    fn determine_shell(&self) -> (String, i32, i32) {
+        let max_num_of_electrons: i32;
+        let mut shell = String::new();
+        let principal_quantum_num: i32;
+
+        if self.num_of_electrons <= 2 {
+            shell = SHELL[0].to_string();
+            principal_quantum_num = PRINCIPAL_QUANTUM_NUM[0];
+            max_num_of_electrons = 2 * principal_quantum_num.pow(2);
+
+            return (shell, principal_quantum_num, max_num_of_electrons);
+        } else if self.num_of_electrons <= 8 {
+            shell = SHELL[1].to_string();
+            principal_quantum_num = PRINCIPAL_QUANTUM_NUM[1];
+            max_num_of_electrons = 2 * principal_quantum_num.pow(2);
+
+            return (shell, principal_quantum_num, max_num_of_electrons);
+        } else if self.num_of_electrons <= 18 {
+            shell = SHELL[2].to_string();
+            principal_quantum_num = PRINCIPAL_QUANTUM_NUM[2];
+            max_num_of_electrons = 2 * principal_quantum_num.pow(2);
+
+            return (shell, principal_quantum_num, max_num_of_electrons);
+        } else {
+            shell = SHELL[3].to_string();
+            principal_quantum_num = PRINCIPAL_QUANTUM_NUM[3];
+            max_num_of_electrons = 2 * principal_quantum_num.pow(2);
+
+            return (shell, principal_quantum_num, max_num_of_electrons);
+        }
+    }
+
+    fn determine_subshell(&self) {
+        let shell = self.determine_shell();
+    }
+}
 
 #[derive(Debug)]
 pub struct Molecule {
@@ -241,4 +290,12 @@ pub enum Phase {
     Liquid,
     Gas,
     Plasma,
+}
+
+pub enum ElectronConfig {
+    LewisDotSymbol,
+    OrbitalDiagram,
+    SPDFNotation,
+    SPDFNotationExpanded,
+    NobleGasNotation,
 }
