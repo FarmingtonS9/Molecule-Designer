@@ -5,15 +5,18 @@ use serde::Deserialize;
 use std::fmt::Display;
 
 //Constants
-const ENERGY_SUBLEVEL: [&str; 4] = ["s", "p", "d", "f"];
+const SHELL: [&str; 4] = ["K", "L", "M", "N"];
+const ORBITAL: [&str; 4] = ["s", "p", "d", "f"];
 
 //Traits (shared behaviours/properties)
 pub trait Atom {
-    //Electron configuration of atom
+    //Electron configuration of atom or molecule
     fn electronic_structure() {}
 }
 
 //Structs (data)
+//Find the minimum amount of information needed for other information to derived from.
+//E.g Atomic Number (Z) can be derived directly from the number of protons.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd)]
 pub struct Element {
     #[serde(rename = "Element")]
@@ -22,6 +25,24 @@ pub struct Element {
     pub symbol: String,
     #[serde(rename = "AtomicNumber")]
     pub atomic_num: i32,
+    #[serde(rename = "AtomicMass")]
+    pub atomic_mass: f32,
+    #[serde(rename = "NumberofProtons")]
+    pub num_of_protons: i32,
+    #[serde(rename = "NumberofNeutrons")]
+    pub num_of_neutrons: i32,
+    #[serde(rename = "NumberofElectrons")]
+    pub num_of_electrons: i32,
+    #[serde(rename = "Period")]
+    pub period: i32,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd)]
+struct RawElement {
+    #[serde(rename = "Element")]
+    pub element: String,
+    #[serde(rename = "Symbol")]
+    pub symbol: String,
     #[serde(rename = "AtomicMass")]
     pub atomic_mass: f32,
     #[serde(rename = "NumberofProtons")]

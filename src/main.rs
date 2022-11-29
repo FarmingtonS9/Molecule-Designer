@@ -8,7 +8,6 @@ mod chemistry;
 use crate::chemistry::*;
 
 const OCTET_NUMBER: u32 = 8;
-const ENERGY_SUBLEVEL: [&str; 4] = ["s", "p", "d", "f"];
 const PRINCIPLE_ENERGY_LEVEL: [i32; 4] = [1, 2, 3, 4];
 const NOBLE_GAS_ELEMENT_NUMBER: [i32; 7] = [2, 10, 18, 36, 54, 86, 118];
 
