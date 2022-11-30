@@ -11,6 +11,12 @@ const PRINCIPAL_QUANTUM_NUM: [i32; 4] = [1, 2, 3, 4];
 const ORBITAL_SYMBOLS: [&str; 4] = ["s", "p", "d", "f"];
 const ORBITAL_NUM: [i32; 4] = [1, 3, 5, 7];
 
+//Cheeky hardcode of subshell values hehe
+const HC_SHELL: [&str; 19] = [
+    "1s", "2s", "2p", "3s", "3p", "4s", "3d", "4p", "5s", "4d", "5p", "6s", "4f", "5d", "6p", "7s",
+    "5f", "6d", "7p",
+];
+
 //Public
 
 //Traits (shared behaviours/properties)
@@ -186,11 +192,17 @@ impl Element {
 
 //Private associated functions
 impl Element {
+    //Determine the shell of the element
+    //May have to rethink how to structure these functions.
+    //Incorporate the 4 quantum numbers, maybe??
     fn determine_shell(&self) -> (String, i32, i32) {
         let max_num_of_electrons: i32;
         let mut shell = String::new();
         let principal_quantum_num: i32;
 
+        //Based on number of electrons, return the shell, principal quantum number and maximum number of electrons
+        //In this shell.
+        //Restructure this to work out shell using the number of electrons (instead of hardcoding values)
         if self.num_of_electrons <= 2 {
             shell = SHELL[0].to_string();
             principal_quantum_num = PRINCIPAL_QUANTUM_NUM[0];
