@@ -1,4 +1,5 @@
 #![allow(unused)]
+#![feature(exclusive_range_pattern)]
 
 //Imports
 use serde::Deserialize;
@@ -7,12 +8,12 @@ use std::fmt::Display;
 //Constants
 //Private
 const SHELL: [&str; 4] = ["K", "L", "M", "N"];
-const PRINCIPAL_QUANTUM_NUM: [i32; 4] = [1, 2, 3, 4];
-const ORBITAL_SYMBOLS: [&str; 4] = ["s", "p", "d", "f"];
+const PRINCIPAL_QUANTUM_NUM: [i32; 6] = [1, 2, 3, 4, 5, 6];
+const ORBITAL_SYMBOLS: [&str; 6] = ["s", "p", "d", "f", "g", "h"];
 const ORBITAL_NUM: [i32; 4] = [1, 3, 5, 7];
 
-//Cheeky hardcode of subshell values hehe
-const HC_SHELL: [&str; 19] = [
+//Cheeky hardcode of subshell values in order hehe
+const HC_SUBSHELL: [&str; 19] = [
     "1s", "2s", "2p", "3s", "3p", "4s", "3d", "4p", "5s", "4d", "5p", "6s", "4f", "5d", "6p", "7s",
     "5f", "6d", "7p",
 ];
@@ -166,7 +167,14 @@ impl Element {
         todo!()
     }
 
-    pub fn list() {}
+    pub fn get_electron_quantum_nums(&self) {
+        let quantum_nums = self.determine_orbit();
+        let angular_momentum = quantum_nums.2;
+        println!(
+            "{}{}{}{}{}",
+            quantum_nums.0, quantum_nums.1, angular_momentum.0, angular_momentum.1, quantum_nums.3
+        );
+    }
 }
 
 //Impl for different representations of electron configurations
@@ -230,8 +238,29 @@ impl Element {
         }
     }
 
-    fn determine_subshell(&self) {
+    //Determine angular momentum quantum number
+    fn determine_subshell(&self) -> (String, i32, (String, i32)) {
         let shell = self.determine_shell();
+        let angular_momentum_quantum_num = shell.1 - 1;
+        let index = angular_momentum_quantum_num as usize;
+        let angular_momentum_symbol = ORBITAL_SYMBOLS[index].to_string();
+
+        return (
+            shell.0,
+            shell.1,
+            (angular_momentum_symbol, angular_momentum_quantum_num),
+        );
+    }
+
+    //Determine magnetic quantum number
+    //Update algorithm to return appropriate magnetic numbers (i.e )
+    fn determine_orbit(&self) -> (String, i32, (String, i32), i32) {
+        let subshell = self.determine_subshell();
+        let subshell_tuple = subshell.2;
+        //Asks for principal quantum number, calculates magnetic number
+        let magnetic_quantum_num = (2 * subshell.1) + 1;
+
+        return (subshell.0, subshell.1, subshell_tuple, magnetic_quantum_num);
     }
 }
 

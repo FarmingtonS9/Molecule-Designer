@@ -17,7 +17,7 @@ fn main() -> core::result::Result<(), io::Error> {
     println!("Why? Because I want to create molecules using the ideas of chemistry and physics. I want to do this to explore the fields of chemistry and physics. Eventually, I would love to keep track of materials and their associated processes.");
 
     let file_path = r"Periodic Table of Elements.csv";
-    let element_list = read_csv(file_path).expect("Could not create atom_list.");
+    let element_list = read_csv(file_path).expect("Could not create element_list.");
 
     /* TODO. Building a tui/gui interface
         match tui_entry(atom_list) {
@@ -57,7 +57,11 @@ fn main() -> core::result::Result<(), io::Error> {
     println!("{}", diatomic_hydrogen);
 
     let helium = &element_list[1];
-    print!("{}", helium.lewis_dot_symbol());
+    println!("{}", helium.lewis_dot_symbol());
+
+    let element = &element_list[2];
+    print!("{} code: ", &element.element);
+    element.get_electron_quantum_nums();
 
     Ok(())
 }
