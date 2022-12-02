@@ -59,9 +59,11 @@ fn main() -> core::result::Result<(), io::Error> {
     let helium = &element_list[1];
     println!("{}", helium.lewis_dot_symbol());
 
-    let element = &element_list[2];
+    let element = &element_list[25];
     print!("{} code: ", &element.element);
     element.get_electron_quantum_nums();
+
+    element.det_shell();
 
     Ok(())
 }

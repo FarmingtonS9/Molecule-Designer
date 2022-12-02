@@ -1,5 +1,9 @@
 #![allow(unused)]
-#![feature(exclusive_range_pattern)]
+/*To do
+- Add enthalpy; determine its effects
+    - First, add Standard Lab Conditions (SLC: Pressure: 1 atm, Temperature: 25(C) degrees/298.15(K))
+    - Likely add the top physical quantities to the physics.rs file
+*/
 
 //Imports
 use serde::Deserialize;
@@ -7,9 +11,9 @@ use std::fmt::Display;
 
 //Constants
 //Private
-const SHELL: [&str; 4] = ["K", "L", "M", "N"];
-const PRINCIPAL_QUANTUM_NUM: [i32; 6] = [1, 2, 3, 4, 5, 6];
-const ORBITAL_SYMBOLS: [&str; 6] = ["s", "p", "d", "f", "g", "h"];
+const SHELL: [&str; 7] = ["K", "L", "M", "N", "O", "P", "Q"];
+const PRINCIPAL_QUANTUM_NUM: [i32; 7] = [1, 2, 3, 4, 5, 6, 7];
+const ORBITAL_SYMBOLS: [&str; 7] = ["s", "p", "d", "f", "g", "h", "i"];
 const ORBITAL_NUM: [i32; 4] = [1, 3, 5, 7];
 
 //Cheeky hardcode of subshell values in order hehe
@@ -169,10 +173,21 @@ impl Element {
 
     pub fn get_electron_quantum_nums(&self) {
         let quantum_nums = self.determine_orbit();
+        let shell = quantum_nums.0;
+        let principal_quantum_num = quantum_nums.1;
+        let magnetic_quantum_num = quantum_nums.3;
+
         let angular_momentum = quantum_nums.2;
+        let angular_momentum_symb = angular_momentum.0;
+        let angular_momentum_quantum_num = angular_momentum.1;
+
         println!(
             "{}{}{}{}{}",
-            quantum_nums.0, quantum_nums.1, angular_momentum.0, angular_momentum.1, quantum_nums.3
+            shell,
+            principal_quantum_num,
+            angular_momentum_symb,
+            angular_momentum_quantum_num,
+            magnetic_quantum_num
         );
     }
 }
@@ -211,6 +226,7 @@ impl Element {
         //Based on number of electrons, return the shell, principal quantum number and maximum number of electrons
         //In this shell.
         //Restructure this to work out shell using the number of electrons (instead of hardcoding values)
+        //Curently, outputting incorrect values because of the if conditions.
         if self.num_of_electrons <= 2 {
             shell = SHELL[0].to_string();
             principal_quantum_num = PRINCIPAL_QUANTUM_NUM[0];
@@ -256,11 +272,43 @@ impl Element {
     //Update algorithm to return appropriate magnetic numbers (i.e )
     fn determine_orbit(&self) -> (String, i32, (String, i32), i32) {
         let subshell = self.determine_subshell();
-        let subshell_tuple = subshell.2;
+        let angular_momentum_tuple = subshell.2;
         //Asks for principal quantum number, calculates magnetic number
         let magnetic_quantum_num = (2 * subshell.1) + 1;
 
-        return (subshell.0, subshell.1, subshell_tuple, magnetic_quantum_num);
+        return (
+            subshell.0,
+            subshell.1,
+            angular_momentum_tuple,
+            magnetic_quantum_num,
+        );
+    }
+
+    //NEW, UPDATED, ROBUST algorithms here.
+    pub fn det_shell(&self) {
+        //Element's number of shells
+        let mut element_no_of_electron = self.num_of_electrons;
+        let mut principal_quantum_num = 1;
+        let mut remaining_electrons: i32 = 0;
+        //Figure out the shell, iterating(?) until element's electrons are exhausted
+        //Calculate first element in PRINCIPAL_QUANTUM_NUM array using 2*n^2
+        //Subtract this value from Element's electrons
+        //Repeat until Element's electrons is less than calculated value
+        for num in PRINCIPAL_QUANTUM_NUM.iter() {
+            let mut temp_val = 2 * (num.pow(2));
+            if element_no_of_electron > temp_val {
+                element_no_of_electron = element_no_of_electron - temp_val;
+                principal_quantum_num = principal_quantum_num + 1;
+            } else {
+                remaining_electrons = element_no_of_electron;
+                break;
+            }
+        }
+        println!(
+            "Remaining electrons: {}, Principal Number: {}",
+            remaining_electrons, principal_quantum_num
+        );
+        let principal_quantum_num_slice = PRINCIPAL_QUANTUM_NUM[principal_quantum_num as usize];
     }
 }
 
