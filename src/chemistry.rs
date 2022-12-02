@@ -305,8 +305,10 @@ impl Element {
             }
         }
         println!(
-            "Remaining electrons: {}, Principal Number: {}",
-            remaining_electrons, principal_quantum_num
+            "Remaining electrons: {}, Principal Number: {}, Shell letter: {}",
+            remaining_electrons,
+            principal_quantum_num,
+            SHELL[(principal_quantum_num - 1) as usize]
         );
         let principal_quantum_num_slice = PRINCIPAL_QUANTUM_NUM[principal_quantum_num as usize];
     }
