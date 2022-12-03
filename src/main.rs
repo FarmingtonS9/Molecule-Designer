@@ -3,7 +3,6 @@
 use csv::Reader;
 use std::{error::Error, io};
 
-mod app;
 mod chemistry;
 use crate::chemistry::*;
 
@@ -63,7 +62,33 @@ fn main() -> core::result::Result<(), io::Error> {
     print!("{} code: ", &element.element);
     element.get_electron_quantum_nums();
 
-    element.det_shell();
+    let element = &element_list[0];
+    println!("Element: {}", element.element);
+    element.det_subshell();
+
+    let element = &element_list[1];
+    println!("Element: {}", element.element);
+    element.det_subshell();
+
+    let element = &element_list[4];
+    println!("Element: {}", element.element);
+    element.det_subshell();
+
+    let element = &element_list[6];
+    println!("Element: {}", element.element);
+    element.det_subshell();
+
+    let element = &element_list[9];
+    println!("Element: {}", element.element);
+    element.det_subshell();
+
+    let element = &element_list[16];
+    println!("Element: {}", element.element);
+    element.det_subshell();
+
+    let element = &element_list[36];
+    println!("Element: {}", element.element);
+    element.det_subshell();
 
     Ok(())
 }

@@ -12,7 +12,8 @@ use std::fmt::Display;
 //Constants
 //Private
 const SHELL: [&str; 7] = ["K", "L", "M", "N", "O", "P", "Q"];
-const PRINCIPAL_QUANTUM_NUM: [i32; 7] = [1, 2, 3, 4, 5, 6, 7];
+const PRINCIPAL_QUANTUM_NUM_ARRAY: [i32; 7] = [1, 2, 3, 4, 5, 6, 7];
+const AZIMUTHAL_QUANTUM_NUM_ARRAY: [i32; 7] = [0, 1, 2, 3, 4, 5, 6];
 const ORBITAL_SYMBOLS: [&str; 7] = ["s", "p", "d", "f", "g", "h", "i"];
 const ORBITAL_NUM: [i32; 4] = [1, 3, 5, 7];
 
@@ -229,25 +230,25 @@ impl Element {
         //Curently, outputting incorrect values because of the if conditions.
         if self.num_of_electrons <= 2 {
             shell = SHELL[0].to_string();
-            principal_quantum_num = PRINCIPAL_QUANTUM_NUM[0];
+            principal_quantum_num = PRINCIPAL_QUANTUM_NUM_ARRAY[0];
             max_num_of_electrons = 2 * principal_quantum_num.pow(2);
 
             return (shell, principal_quantum_num, max_num_of_electrons);
         } else if self.num_of_electrons <= 8 {
             shell = SHELL[1].to_string();
-            principal_quantum_num = PRINCIPAL_QUANTUM_NUM[1];
+            principal_quantum_num = PRINCIPAL_QUANTUM_NUM_ARRAY[1];
             max_num_of_electrons = 2 * principal_quantum_num.pow(2);
 
             return (shell, principal_quantum_num, max_num_of_electrons);
         } else if self.num_of_electrons <= 18 {
             shell = SHELL[2].to_string();
-            principal_quantum_num = PRINCIPAL_QUANTUM_NUM[2];
+            principal_quantum_num = PRINCIPAL_QUANTUM_NUM_ARRAY[2];
             max_num_of_electrons = 2 * principal_quantum_num.pow(2);
 
             return (shell, principal_quantum_num, max_num_of_electrons);
         } else {
             shell = SHELL[3].to_string();
-            principal_quantum_num = PRINCIPAL_QUANTUM_NUM[3];
+            principal_quantum_num = PRINCIPAL_QUANTUM_NUM_ARRAY[3];
             max_num_of_electrons = 2 * principal_quantum_num.pow(2);
 
             return (shell, principal_quantum_num, max_num_of_electrons);
@@ -285,7 +286,8 @@ impl Element {
     }
 
     //NEW, UPDATED, ROBUST algorithms here.
-    pub fn det_shell(&self) {
+    //Determine shell
+    fn det_shell(&self) -> (i32, i32) {
         //Element's number of shells
         let mut element_no_of_electron = self.num_of_electrons;
         let mut principal_quantum_num = 1;
@@ -294,7 +296,7 @@ impl Element {
         //Calculate first element in PRINCIPAL_QUANTUM_NUM array using 2*n^2
         //Subtract this value from Element's electrons
         //Repeat until Element's electrons is less than calculated value
-        for num in PRINCIPAL_QUANTUM_NUM.iter() {
+        for num in PRINCIPAL_QUANTUM_NUM_ARRAY.iter() {
             let mut temp_val = 2 * (num.pow(2));
             if element_no_of_electron > temp_val {
                 element_no_of_electron = element_no_of_electron - temp_val;
@@ -304,13 +306,61 @@ impl Element {
                 break;
             }
         }
-        println!(
-            "Remaining electrons: {}, Principal Number: {}, Shell letter: {}",
-            remaining_electrons,
-            principal_quantum_num,
-            SHELL[(principal_quantum_num - 1) as usize]
-        );
-        let principal_quantum_num_slice = PRINCIPAL_QUANTUM_NUM[principal_quantum_num as usize];
+        //Output principal quantum number and remaining electrons
+        (principal_quantum_num, remaining_electrons)
+    }
+
+    //Determine subshell, based on det_shell()
+    pub fn det_subshell(&self) {
+        //Values passed from det_shell() function
+        let shell_tuple = self.det_shell();
+        //Resulting values
+        let principal_quantum_num = shell_tuple.0;
+        let electrons_outer_shell = shell_tuple.1;
+        let mut element_no_of_electrons = self.num_of_electrons;
+
+        //Create slice of principal quantum numbers
+        let principal_quantum_num_slice =
+            &PRINCIPAL_QUANTUM_NUM_ARRAY[..principal_quantum_num as usize];
+
+        //Iterate over each element in the principal quantum number (n) slice
+        //Each iteration over n, then iterate over the azimuthal quantum number slice
+        //To calculate the corresponding maximum number of electrons per subshell
+        //
+        //Equation: 2 * ((2 * l) + 1)
+        //Vector to hold max no. of electrons per subshell
+        let mut max_number_electrons_subshell: Vec<i32> = Vec::new();
+
+        for n in principal_quantum_num_slice.iter() {
+            //n determines where we are in the principal slice
+            //
+            //At each value of n, enter l and generate max no. of electrons
+            //Take a slice of the azimuthal quantum number (l) array based on the principal quantum number (n)
+            let azimthual_quantum_num_slice = &AZIMUTHAL_QUANTUM_NUM_ARRAY[..(*n as usize)];
+
+            for l in azimthual_quantum_num_slice.iter() {
+                let electrons_in_subshell =
+                    2 * ((2 * azimthual_quantum_num_slice[*l as usize]) + 1);
+
+                if element_no_of_electrons > electrons_in_subshell {
+                    element_no_of_electrons = element_no_of_electrons - electrons_in_subshell
+                }
+                max_number_electrons_subshell.push(electrons_in_subshell);
+            }
+        }
+
+        //Replacing the last value with remaining electrons value
+        //Obtaining the actual number of electrons of the element closer to the electron configuration
+        let mut element_subshell_config = max_number_electrons_subshell.clone();
+        element_subshell_config.pop();
+        let last_element = element_subshell_config.capacity() - 1;
+        element_subshell_config.insert(last_element, element_no_of_electrons);
+
+        println!("Principal quantum number: {}, electrons in outer shell: {}, azimuthal quantum number: , max number of electrons per subshell: {:?}, electron configuration: {:?}", 
+        principal_quantum_num, 
+        electrons_outer_shell, 
+        max_number_electrons_subshell, 
+        element_subshell_config)
     }
 }
 
