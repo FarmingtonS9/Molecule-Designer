@@ -198,11 +198,11 @@ impl Element {
     //Lewis dot diagram for element.
     //Make this associated function more robust
     pub fn lewis_dot_symbol(&self) -> String {
-        let dot = ["•", "••", ":"];
+        let dot = ["", "•", "••", ":"];
 
         let diagram = format!(
             "{:>2}\n{}{}{}\n{:>2}",
-            dot[0], dot[0], &self.symbol, dot[0], dot[0]
+            dot[0], dot[1], &self.symbol, dot[1], dot[0]
         );
         diagram
     }
@@ -286,6 +286,9 @@ impl Element {
     }
 
     //NEW, UPDATED, ROBUST algorithms here.
+    //Madelung Rule
+    //n + l = subshell energy
+
     //Determine shell
     fn det_shell(&self) -> (i32, i32) {
         //Element's number of shells
