@@ -22,6 +22,9 @@ const HC_SUBSHELL: [&str; 19] = [
     "1s", "2s", "2p", "3s", "3p", "4s", "3d", "4p", "5s", "4d", "5p", "6s", "4f", "5d", "6p", "7s",
     "5f", "6d", "7p",
 ];
+const CHEAT_SUBSHELL_NUMS: [i32; 19] = [
+    2, 2, 6, 2, 6, 2, 10, 6, 2, 10, 6, 2, 14, 10, 6, 2, 14, 10, 6,
+];
 
 //Public
 
@@ -54,6 +57,7 @@ pub struct Element {
     pub period: i32,
 }
 
+//RawElement handles the raw data input from a file, i.e .csv, and enables a "clean" Element struct
 //Try to use RawElement to build an Element struct. I.e, deriving values for fields from raw data.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd)]
 struct RawElement {
@@ -287,7 +291,11 @@ impl Element {
 
     //NEW, UPDATED, ROBUST algorithms here.
     //Madelung Rule
-    //n + l = subshell energy
+    //n + l = subshell energy, determines order with lower n values preferred first in case of repeated values
+    //May not need this function
+    fn madelung_num(principal_num: i32, azimuthal_num: i32) -> i32 {
+        principal_num + azimuthal_num
+    }
 
     //Determine shell
     fn det_shell(&self) -> (i32, i32) {
@@ -333,6 +341,8 @@ impl Element {
         //Equation: 2 * ((2 * l) + 1)
         //Vector to hold max no. of electrons per subshell
         let mut max_number_electrons_subshell: Vec<i32> = Vec::new();
+        let mut madelung_num_vector: Vec<usize> = Vec::new();
+        let mut azimuthal_num_vector: Vec<i32> = Vec::new();
 
         for n in principal_quantum_num_slice.iter() {
             //n determines where we are in the principal slice
@@ -342,28 +352,66 @@ impl Element {
             let azimthual_quantum_num_slice = &AZIMUTHAL_QUANTUM_NUM_ARRAY[..(*n as usize)];
 
             for l in azimthual_quantum_num_slice.iter() {
+                //Add azithumal number to vector
+                azimuthal_num_vector.push(*l);
+
+                //Madelung's number
+                let madelungs_num = (*n + azimthual_quantum_num_slice[*l as usize]) as usize;
+                madelung_num_vector.push(madelungs_num);
+
+                //
                 let electrons_in_subshell =
                     2 * ((2 * azimthual_quantum_num_slice[*l as usize]) + 1);
 
                 if element_no_of_electrons > electrons_in_subshell {
                     element_no_of_electrons = element_no_of_electrons - electrons_in_subshell
                 }
+
+                //Setting the position inside the max_electrons_subshell vector
                 max_number_electrons_subshell.push(electrons_in_subshell);
             }
         }
+
+        //Pass over madelung_num_vector and rearrange to sort subshell energy by ascending order
+        let num_of_passes = principal_quantum_num_slice.len();
 
         //Replacing the last value with remaining electrons value
         //Obtaining the actual number of electrons of the element closer to the electron configuration
         let mut element_subshell_config = max_number_electrons_subshell.clone();
         element_subshell_config.pop();
-        let last_element = element_subshell_config.capacity() - 1;
+        let last_element = element_subshell_config.len();
         element_subshell_config.insert(last_element, element_no_of_electrons);
 
-        println!("Principal quantum number: {}, electrons in outer shell: {}, azimuthal quantum number: , max number of electrons per subshell: {:?}, electron configuration: {:?}", 
-        principal_quantum_num, 
-        electrons_outer_shell, 
-        max_number_electrons_subshell, 
-        element_subshell_config)
+        //2nd attempt; changing the conditional loop
+        let remaining_electrons = self.num_of_electrons;
+        //Electron configuration of element
+        let mut electron_configuration: Vec<i32> = Vec::new();
+        //Temporary vector holding the subshell values before being added to the electron configuration
+        let mut working_vector: Vec<i32> = Vec::new();
+        let mut azimuthal_num = 0;
+        let mut vector_size = 1;
+        let mut principal_num = 1;
+
+        while remaining_electrons != 0 {
+            //Maximum size of "working" vector is the azimuthal number + 1
+            //Last element in subshell vector is always value of n + l = n
+            //Once "working" vector is reaches size of azimuthal number + 1, add to electron config vector
+            //Repeat until remaining electrons are exhausted
+            //Hopefully produces the electron configuation
+            let azimuthal_num = 1;
+
+            let azimuthal_num_slice = &AZIMUTHAL_QUANTUM_NUM_ARRAY[..azimuthal_num as usize];
+        }
+
+        println!(
+            "Principal quantum number: {}, electrons in outer shell: {}, azimuthal quantum number: {:?}, Madelung's numbers: {:?}, max number of electrons per subshell: {:?}, electron configuration: {:?}",
+            principal_quantum_num,
+            electrons_outer_shell,
+            azimuthal_num_vector,
+            madelung_num_vector,
+            max_number_electrons_subshell,
+            element_subshell_config
+        )
     }
 }
 
