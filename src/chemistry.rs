@@ -5,7 +5,9 @@
     - Likely add the top physical quantities to the physics.rs file
 */
 
+use na::{DMatrix, Matrix1};
 //Imports
+use nalgebra as na;
 use serde::Deserialize;
 use std::fmt::Display;
 
@@ -372,9 +374,6 @@ impl Element {
             }
         }
 
-        //Pass over madelung_num_vector and rearrange to sort subshell energy by ascending order
-        let num_of_passes = principal_quantum_num_slice.len();
-
         //Replacing the last value with remaining electrons value
         //Obtaining the actual number of electrons of the element closer to the electron configuration
         let mut element_subshell_config = max_number_electrons_subshell.clone();
@@ -382,26 +381,7 @@ impl Element {
         let last_element = element_subshell_config.len();
         element_subshell_config.insert(last_element, element_no_of_electrons);
 
-        //2nd attempt; changing the conditional loop
-        let remaining_electrons = self.num_of_electrons;
-        //Electron configuration of element
-        let mut electron_configuration: Vec<i32> = Vec::new();
-        //Temporary vector holding the subshell values before being added to the electron configuration
-        let mut working_vector: Vec<i32> = Vec::new();
-        let mut azimuthal_num = 0;
-        let mut vector_size = 1;
-        let mut principal_num = 1;
-
-        while remaining_electrons != 0 {
-            //Maximum size of "working" vector is the azimuthal number + 1
-            //Last element in subshell vector is always value of n + l = n
-            //Once "working" vector is reaches size of azimuthal number + 1, add to electron config vector
-            //Repeat until remaining electrons are exhausted
-            //Hopefully produces the electron configuation
-            let azimuthal_num = 1;
-
-            let azimuthal_num_slice = &AZIMUTHAL_QUANTUM_NUM_ARRAY[..azimuthal_num as usize];
-        }
+        //2nd attempt;
 
         println!(
             "Principal quantum number: {}, electrons in outer shell: {}, azimuthal quantum number: {:?}, Madelung's numbers: {:?}, max number of electrons per subshell: {:?}, electron configuration: {:?}",
@@ -412,6 +392,12 @@ impl Element {
             max_number_electrons_subshell,
             element_subshell_config
         )
+    }
+
+    pub fn create_matrix(&self) {
+        let period = self.period as usize;
+        let dm = DMatrix::zeros_generic(period, period);
+        println!("{:?}", dm);
     }
 }
 

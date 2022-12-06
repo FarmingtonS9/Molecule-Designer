@@ -90,6 +90,8 @@ fn main() -> core::result::Result<(), io::Error> {
     println!("Element: {}", element.element);
     element.det_subshell();
 
+    element.create_matrix();
+
     Ok(())
 }
 
