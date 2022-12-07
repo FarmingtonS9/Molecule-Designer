@@ -396,8 +396,16 @@ impl Element {
 
     pub fn create_matrix(&self) {
         let period = self.period as usize;
-        let dm = DMatrix::zeros_generic(period, period);
-        println!("{:?}", dm);
+        let dm = DMatrix::from_element(period, period, 3);
+        println!("{:?}", &dm);
+        let lower_tri = dm.lower_triangle();
+        println!("Lower matrix: {:#?}", &lower_tri);
+        let shape = &lower_tri.shape();
+        println!("Shape: {:?}", shape);
+        let diagonal = &lower_tri.diagonal();
+        println!("Diagonal: {:?}", diagonal);
+        let transpose = &lower_tri.transpose();
+        println!("Transpose: {:?}", transpose);
     }
 }
 
