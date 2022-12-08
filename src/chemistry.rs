@@ -382,6 +382,24 @@ impl Element {
         element_subshell_config.insert(last_element, element_no_of_electrons);
 
         //2nd attempt;
+        let principal_num = self.period;
+        let mut azimuthal_num = 0;
+        let mut num_subshell_electrons = 0;
+        let principal_num_array = &PRINCIPAL_QUANTUM_NUM_ARRAY[..principal_num as usize];
+
+        let mut matrix = self.create_matrix(self.period as usize);
+
+        for num in principal_num_array.iter() {
+            let azimuthal_num_array = &AZIMUTHAL_QUANTUM_NUM_ARRAY[..*num as usize];
+
+            for l in azimuthal_num_array.iter() {
+                let azimuthal_num = l;
+                //(principal number, azimuthal number)
+                let element_position = self.get_pos_in_matrix(principal_num, azimuthal_num);
+
+                let num_subshell_electrons = 2 * ((2 * l) + 1);
+            }
+        }
 
         println!(
             "Principal quantum number: {}, electrons in outer shell: {}, azimuthal quantum number: {:?}, Madelung's numbers: {:?}, max number of electrons per subshell: {:?}, electron configuration: {:?}",
@@ -394,10 +412,21 @@ impl Element {
         )
     }
 
-    pub fn create_matrix(&self) {
-        let period = self.period as usize;
-        let mut dm = DMatrix::from_element(period, period, 2);
+    //Creates a zero matrix with period dimensions
+    fn create_matrix(&self, period: usize) -> DMatrix<i32> {
+        let dm = DMatrix::from_element(period, period, 0);
+        dm
     }
+
+    //Find position in matrix based on principal and azimuthal number
+    fn get_pos_in_matrix(&self, principal_num: i32, azimuthal_num: &i32) -> (usize, usize) {
+        let principal_num = principal_num as usize;
+        let azimuthal_num = (azimuthal_num + 1) as usize;
+        (principal_num, azimuthal_num)
+    }
+
+    //Set position in matrix, output results as (rows, columns)
+    //fn set_pos_in_matrix() -> (usize, usize) {}
 }
 
 #[derive(Debug)]
