@@ -329,7 +329,6 @@ impl Element {
         let shell_tuple = self.det_shell();
         //Resulting values
         let principal_quantum_num = shell_tuple.0;
-        let electrons_outer_shell = shell_tuple.1;
         let mut element_no_of_electrons = self.num_of_electrons;
 
         //Create slice of principal quantum numbers
@@ -342,7 +341,6 @@ impl Element {
         //
         //Equation: 2 * ((2 * l) + 1)
         //Vector to hold max no. of electrons per subshell
-        let mut max_number_electrons_subshell: Vec<i32> = Vec::new();
         let mut madelung_num_vector: Vec<usize> = Vec::new();
         let mut azimuthal_num_vector: Vec<i32> = Vec::new();
 
@@ -368,18 +366,10 @@ impl Element {
                 if element_no_of_electrons > electrons_in_subshell {
                     element_no_of_electrons = element_no_of_electrons - electrons_in_subshell
                 }
-
-                //Setting the position inside the max_electrons_subshell vector
-                max_number_electrons_subshell.push(electrons_in_subshell);
             }
         }
 
-        //Replacing the last value with remaining electrons value
-        //Obtaining the actual number of electrons of the element closer to the electron configuration
-        let mut element_subshell_config = max_number_electrons_subshell.clone();
-        element_subshell_config.pop();
-        let last_element = element_subshell_config.len();
-        element_subshell_config.insert(last_element, element_no_of_electrons);
+        let electron_config = self.precalculated_subshells();
 
         //2nd attempt;
         let principal_num = self.period;
@@ -388,19 +378,18 @@ impl Element {
         let principal_num_array = &PRINCIPAL_QUANTUM_NUM_ARRAY[..principal_num as usize];
 
         println!(
-            "Principal quantum number: {}, electrons in outer shell: {}, azimuthal quantum number: {:?}, Madelung's numbers: {:?}, max number of electrons per subshell: {:?}, electron configuration: {:?}",
+            "Principal quantum number: {}, electrons in outer shell: {}, azimuthal quantum number: {:?}, Madelung's numbers: {:?}, electron configuration: {:?}",
             principal_quantum_num,
-            electrons_outer_shell,
+            electron_config.last().unwrap(),
             azimuthal_num_vector,
             madelung_num_vector,
-            max_number_electrons_subshell,
-            element_subshell_config
+            electron_config
         )
     }
 
     //Cheat/precalculated subshell numbers.
     //Will need to come back and try to create this algorithm properly
-    pub fn precalculated_subshells(&self) -> Vec<i32> {
+    fn precalculated_subshells(&self) -> Vec<i32> {
         let mut num_electrons = self.num_of_electrons;
         let mut remaining_electrons = 0;
         let mut count = 0;
