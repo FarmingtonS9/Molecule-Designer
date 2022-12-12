@@ -83,12 +83,21 @@ fn main() -> core::result::Result<(), io::Error> {
     element.det_subshell();
 
     let element = &element_list[16];
-    println!("Element: {}", element.element);
-    element.det_subshell();
+    println!(
+        "Element: {}, Config: {:?}",
+        element.element,
+        element.precalculated_subshells()
+    );
 
     let element = &element_list[36];
-    println!("Element: {}", element.element);
-    element.det_subshell();
+    println!(
+        "Element: {}, Config: {:?}",
+        element.element,
+        element.precalculated_subshells()
+    );
+
+    let electron_config = element.precalculated_subshells();
+    println!("Electron Configuration: {:?}", electron_config);
 
     Ok(())
 }

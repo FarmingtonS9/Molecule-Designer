@@ -387,20 +387,6 @@ impl Element {
         let mut num_subshell_electrons = 0;
         let principal_num_array = &PRINCIPAL_QUANTUM_NUM_ARRAY[..principal_num as usize];
 
-        let mut matrix = self.create_matrix(self.period as usize);
-
-        for num in principal_num_array.iter() {
-            let azimuthal_num_array = &AZIMUTHAL_QUANTUM_NUM_ARRAY[..*num as usize];
-
-            for l in azimuthal_num_array.iter() {
-                let azimuthal_num = l;
-                //(principal number, azimuthal number)
-                let element_position = self.get_pos_in_matrix(principal_num, azimuthal_num);
-
-                let num_subshell_electrons = 2 * ((2 * l) + 1);
-            }
-        }
-
         println!(
             "Principal quantum number: {}, electrons in outer shell: {}, azimuthal quantum number: {:?}, Madelung's numbers: {:?}, max number of electrons per subshell: {:?}, electron configuration: {:?}",
             principal_quantum_num,
@@ -412,21 +398,26 @@ impl Element {
         )
     }
 
-    //Creates a zero matrix with period dimensions
-    fn create_matrix(&self, period: usize) -> DMatrix<i32> {
-        let dm = DMatrix::from_element(period, period, 0);
-        dm
-    }
+    //Cheat/precalculated subshell numbers.
+    //Will need to come back and try to create this algorithm properly
+    pub fn precalculated_subshells(&self) -> Vec<i32> {
+        let mut num_electrons = self.num_of_electrons;
+        let mut remaining_electrons = 0;
+        let mut count = 0;
+        let mut subshell_slice: Vec<i32> = Vec::new();
 
-    //Find position in matrix based on principal and azimuthal number
-    fn get_pos_in_matrix(&self, principal_num: i32, azimuthal_num: &i32) -> (usize, usize) {
-        let principal_num = principal_num as usize;
-        let azimuthal_num = (azimuthal_num + 1) as usize;
-        (principal_num, azimuthal_num)
+        for num in CHEAT_SUBSHELL_NUMS.iter() {
+            if num_electrons > *num {
+                num_electrons = num_electrons - *num;
+                subshell_slice.push(*num)
+            } else {
+                remaining_electrons = num_electrons;
+                subshell_slice.push(remaining_electrons);
+                break;
+            }
+        }
+        subshell_slice
     }
-
-    //Set position in matrix, output results as (rows, columns)
-    //fn set_pos_in_matrix() -> (usize, usize) {}
 }
 
 #[derive(Debug)]
