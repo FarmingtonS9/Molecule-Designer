@@ -24,6 +24,7 @@ const HC_SUBSHELL: [&str; 19] = [
     "1s", "2s", "2p", "3s", "3p", "4s", "3d", "4p", "5s", "4d", "5p", "6s", "4f", "5d", "6p", "7s",
     "5f", "6d", "7p",
 ];
+//Cheat subshell numbers; used until it can be calculated algorithmically
 const CHEAT_SUBSHELL_NUMS: [i32; 19] = [
     2, 2, 6, 2, 6, 2, 10, 6, 2, 10, 6, 2, 14, 10, 6, 2, 14, 10, 6,
 ];
@@ -114,88 +115,10 @@ impl Atom for Element {}
 
 //Public associated functions
 impl Element {
-    //Used to determine if the element is electrically charged
-    //I.e if an element binds to another atom, it may have lost/gained an electron, therefore it is now electrically charged (becomes an ion)
-    pub fn calc_charge(&self) -> i32 {
-        self.num_of_protons - self.num_of_electrons
-    }
-    //This outputs the number of valence electrons.
-    //Works for now, may need to be updated in future.
-    //Likely, will focus on balance of charges.
-    pub fn valence_electrons(&self) -> i32 {
-        let period = self.period;
-        let electron = self.num_of_electrons;
-        let max_valence: i32;
-        let valence: i32;
-
-        match period {
-            1 => {
-                max_valence = 2;
-                valence = max_valence - electron
-            }
-            2 => valence = { 10 - electron },
-            3 => valence = { 18 - electron },
-            _ => todo!(),
-        }
-        //If number of electrons in outer shell is greater than 4, the number of valence electrons "steps" down.
-        if valence > 4 {
-            return valence - (valence - 4) * 2;
-        }
-        valence
-    }
-
     //Still to decide, whether to create molecules through Atom or Molecule structs, or do something funky with traits
-    pub fn create_molecule(elem1: &Self, elem2: &Element) -> Molecule {
-        let elem1_symbol = &elem1.symbol;
-        let elem1_valence = &elem1.valence_electrons();
-
-        let elem2_symbol = &elem2.symbol;
-        let elem2_valence = &elem2.valence_electrons();
-
-        let mut formula = String::new();
-
-        match elem1_symbol {
-            elem2_symbol => {
-                formula = format!("{}_{}", &elem1_symbol, *elem1_valence + *elem2_valence)
-            }
-            _ => {
-                formula = format!(
-                    "{}_{}:{}_{}",
-                    &elem1_symbol, &elem2_valence, &elem2_symbol, &elem1_valence
-                )
-            }
-        }
-
-        let molecule_name = format!("{}-{}\n", &elem1.element, &elem2.element);
-
-        Molecule {
-            name: molecule_name,
-            formula: formula,
-        }
-    }
-
-    pub fn oxidation_states(&self) {
-        todo!()
-    }
-
-    pub fn get_electron_quantum_nums(&self) {
-        let quantum_nums = self.determine_orbit();
-        let shell = quantum_nums.0;
-        let principal_quantum_num = quantum_nums.1;
-        let magnetic_quantum_num = quantum_nums.3;
-
-        let angular_momentum = quantum_nums.2;
-        let angular_momentum_symb = angular_momentum.0;
-        let angular_momentum_quantum_num = angular_momentum.1;
-
-        println!(
-            "{}{}{}{}{}",
-            shell,
-            principal_quantum_num,
-            angular_momentum_symb,
-            angular_momentum_quantum_num,
-            magnetic_quantum_num
-        );
+    pub fn electron_configuration(&self) -> Vec<i32> {
+        let config = self.precalculated_subshells();
+        config
     }
 }
 
@@ -222,75 +145,6 @@ impl Element {
 
 //Private associated functions
 impl Element {
-    //Determine the shell of the element
-    //May have to rethink how to structure these functions.
-    //Incorporate the 4 quantum numbers, maybe??
-    fn determine_shell(&self) -> (String, i32, i32) {
-        let max_num_of_electrons: i32;
-        let mut shell = String::new();
-        let principal_quantum_num: i32;
-
-        //Based on number of electrons, return the shell, principal quantum number and maximum number of electrons
-        //In this shell.
-        //Restructure this to work out shell using the number of electrons (instead of hardcoding values)
-        //Curently, outputting incorrect values because of the if conditions.
-        if self.num_of_electrons <= 2 {
-            shell = SHELL[0].to_string();
-            principal_quantum_num = PRINCIPAL_QUANTUM_NUM_ARRAY[0];
-            max_num_of_electrons = 2 * principal_quantum_num.pow(2);
-
-            return (shell, principal_quantum_num, max_num_of_electrons);
-        } else if self.num_of_electrons <= 8 {
-            shell = SHELL[1].to_string();
-            principal_quantum_num = PRINCIPAL_QUANTUM_NUM_ARRAY[1];
-            max_num_of_electrons = 2 * principal_quantum_num.pow(2);
-
-            return (shell, principal_quantum_num, max_num_of_electrons);
-        } else if self.num_of_electrons <= 18 {
-            shell = SHELL[2].to_string();
-            principal_quantum_num = PRINCIPAL_QUANTUM_NUM_ARRAY[2];
-            max_num_of_electrons = 2 * principal_quantum_num.pow(2);
-
-            return (shell, principal_quantum_num, max_num_of_electrons);
-        } else {
-            shell = SHELL[3].to_string();
-            principal_quantum_num = PRINCIPAL_QUANTUM_NUM_ARRAY[3];
-            max_num_of_electrons = 2 * principal_quantum_num.pow(2);
-
-            return (shell, principal_quantum_num, max_num_of_electrons);
-        }
-    }
-
-    //Determine angular momentum quantum number
-    fn determine_subshell(&self) -> (String, i32, (String, i32)) {
-        let shell = self.determine_shell();
-        let angular_momentum_quantum_num = shell.1 - 1;
-        let index = angular_momentum_quantum_num as usize;
-        let angular_momentum_symbol = ORBITAL_SYMBOLS[index].to_string();
-
-        return (
-            shell.0,
-            shell.1,
-            (angular_momentum_symbol, angular_momentum_quantum_num),
-        );
-    }
-
-    //Determine magnetic quantum number
-    //Update algorithm to return appropriate magnetic numbers (i.e )
-    fn determine_orbit(&self) -> (String, i32, (String, i32), i32) {
-        let subshell = self.determine_subshell();
-        let angular_momentum_tuple = subshell.2;
-        //Asks for principal quantum number, calculates magnetic number
-        let magnetic_quantum_num = (2 * subshell.1) + 1;
-
-        return (
-            subshell.0,
-            subshell.1,
-            angular_momentum_tuple,
-            magnetic_quantum_num,
-        );
-    }
-
     //NEW, UPDATED, ROBUST algorithms here.
     //Madelung Rule
     //n + l = subshell energy, determines order with lower n values preferred first in case of repeated values
@@ -324,7 +178,7 @@ impl Element {
     }
 
     //Determine subshell, based on det_shell()
-    pub fn det_subshell(&self) {
+    fn det_subshell(&self) {
         //Values passed from det_shell() function
         let shell_tuple = self.det_shell();
         //Resulting values
@@ -392,7 +246,6 @@ impl Element {
     fn precalculated_subshells(&self) -> Vec<i32> {
         let mut num_electrons = self.num_of_electrons;
         let mut remaining_electrons = 0;
-        let mut count = 0;
         let mut subshell_slice: Vec<i32> = Vec::new();
 
         for num in CHEAT_SUBSHELL_NUMS.iter() {
@@ -421,30 +274,6 @@ impl Molecule {
     }
 
     //Still to decide, whether to create molecules through Atom (currently a trait) or Molecule structs
-    pub fn create_molecule(elem1: &Element, elem2: &Element) -> Molecule {
-        let elem1_symbol = &elem1.symbol;
-        let elem1_valence = &elem1.valence_electrons();
-
-        let elem2_symbol = &elem2.symbol;
-        let elem2_valence = &elem2.valence_electrons();
-
-        let mut formula = String::new();
-
-        if elem1_symbol == elem2_symbol {
-            formula = format!("{}_{}", &elem1_symbol, *elem1_valence + *elem2_valence);
-        } else {
-            formula = format!(
-                "{}_{}:{}_{}",
-                &elem1_symbol, &elem2_valence, &elem2_symbol, &elem1_valence
-            );
-        }
-        let molecule_name = format!("{}-{}\n", &elem1.element, &elem2.element);
-
-        Molecule {
-            name: molecule_name,
-            formula: formula,
-        }
-    }
 }
 
 impl Display for Molecule {
@@ -471,6 +300,8 @@ impl Display for Particles {
 }
 
 //Enums
+//Phases
+//To implement when enthalpy is implemented
 pub enum Phase {
     Solid,
     Liquid,
@@ -478,8 +309,11 @@ pub enum Phase {
     Plasma,
 }
 
+//Capturing the various diagrams representing the electron configuration of an atom/molecule
+//Currently unused
 pub enum ElectronConfig {
     LewisDotSymbol,
+    CouperKekuleDiagrams,
     OrbitalDiagram,
     SPDFNotation,
     SPDFNotationExpanded,

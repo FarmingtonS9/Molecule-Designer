@@ -18,77 +18,54 @@ fn main() -> core::result::Result<(), io::Error> {
     let file_path = r"Periodic Table of Elements.csv";
     let element_list = read_csv(file_path).expect("Could not create element_list.");
 
-    /* TODO. Building a tui/gui interface
-        match tui_entry(atom_list) {
-            Ok(()) => {},
-            Err(err) => println!("{:?}", err)
-        }
-    */
-    let input = 1;
-
-    let element = &element_list[input - 1];
-    let valence_electrons = element.valence_electrons();
-    println!(
-        "Element: {}, Valence electrons: {}",
-        &element.element, valence_electrons
-    );
-
-    let aluminium = &element_list[12];
-    let oxygen = &element_list[7];
-
-    println!(
-        "Element 1: {}, Element 2: {}\n",
-        &aluminium.element, &oxygen.element
-    );
-
-    for element in element_list.iter() {
-        println!("{}", element);
-    }
-
-    let alum_oxide = Element::create_molecule(aluminium, oxygen);
-    println!("{}", alum_oxide);
-
-    let alum_oxide2 = Molecule::create_molecule(aluminium, oxygen);
-    println!("{}", alum_oxide2);
-
-    let hydrogen = &element_list[0];
-    let diatomic_hydrogen = Molecule::create_molecule(hydrogen, hydrogen);
-    println!("{}", diatomic_hydrogen);
-
-    let helium = &element_list[1];
-    println!("{}", helium.lewis_dot_symbol());
-
-    let element = &element_list[17];
-    print!("{} code: ", &element.element);
-    element.get_electron_quantum_nums();
-
     let element = &element_list[0];
-    println!("Element: {}", element.element);
-    element.det_subshell();
+    println!(
+        "Element: {}; Electron configuration: {:?}",
+        element.element,
+        element.electron_configuration()
+    );
 
     let element = &element_list[1];
-    println!("Element: {}", element.element);
-    element.det_subshell();
+    println!(
+        "Element: {}; Electron configuration: {:?}",
+        element.element,
+        element.electron_configuration()
+    );
 
     let element = &element_list[4];
-    println!("Element: {}", element.element);
-    element.det_subshell();
+    println!(
+        "Element: {}; Electron configuration: {:?}",
+        element.element,
+        element.electron_configuration()
+    );
 
     let element = &element_list[6];
-    println!("Element: {}", element.element);
-    element.det_subshell();
+    println!(
+        "Element: {}; Electron configuration: {:?}",
+        element.element,
+        element.electron_configuration()
+    );
 
     let element = &element_list[9];
-    println!("Element: {}", element.element);
-    element.det_subshell();
+    println!(
+        "Element: {}; Electron configuration: {:?}",
+        element.element,
+        element.electron_configuration()
+    );
 
     let element = &element_list[16];
-    println!("Element: {}", element.element);
-    element.det_subshell();
+    println!(
+        "Element: {}; Electron configuration: {:?}",
+        element.element,
+        element.electron_configuration()
+    );
 
     let element = &element_list[36];
-    println!("Element: {}", element.element);
-    element.det_subshell();
+    println!(
+        "Element: {}; Electron configuration: {:?}",
+        element.element,
+        element.electron_configuration()
+    );
 
     Ok(())
 }
