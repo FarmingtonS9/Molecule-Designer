@@ -20,50 +20,65 @@ fn main() -> core::result::Result<(), io::Error> {
 
     let element = &element_list[0];
     println!(
-        "Element: {}; Electron configuration: {:?}",
+        "Element: {}; Period: {}, Electron configuration: {:?}",
         element.element,
+        element.period,
         element.electron_configuration()
     );
 
     let element = &element_list[1];
     println!(
-        "Element: {}; Electron configuration: {:?}",
+        "Element: {}; Period: {},  Electron configuration: {:?}",
         element.element,
+        element.period,
         element.electron_configuration()
     );
 
     let element = &element_list[4];
     println!(
-        "Element: {}; Electron configuration: {:?}",
+        "Element: {}; Period: {}, Electron configuration: {:?}",
         element.element,
+        element.period,
         element.electron_configuration()
     );
 
     let element = &element_list[6];
     println!(
-        "Element: {}; Electron configuration: {:?}",
+        "Element: {}; Period: {}, Electron configuration: {:?}",
         element.element,
+        element.period,
         element.electron_configuration()
     );
 
     let element = &element_list[9];
     println!(
-        "Element: {}; Electron configuration: {:?}",
+        "Element: {}; Period: {}, Electron configuration: {:?}",
         element.element,
+        element.period,
         element.electron_configuration()
     );
 
     let element = &element_list[16];
     println!(
-        "Element: {}; Electron configuration: {:?}",
+        "Element: {}; Period: {}, Electron configuration: {:?}",
         element.element,
+        element.period,
+        element.electron_configuration()
+    );
+
+    let element = &element_list[25];
+    println!(
+        "Element: {}; Period: {}, Electron configuration: {:?}",
+        element.element,
+        element.period,
         element.electron_configuration()
     );
 
     let element = &element_list[36];
     println!(
-        "Element: {}; Electron configuration: {:?}",
+        "Element: {}; Period: {}, Electron configuration: {:?}",
         element.element,
+        element.period,
         element.electron_configuration()
     );
 

@@ -123,25 +123,7 @@ impl Element {
 }
 
 //Impl for different representations of electron configurations
-impl Element {
-    //Lewis dot diagram for element.
-    //Make this associated function more robust
-    pub fn lewis_dot_symbol(&self) -> String {
-        let dot = ["", "•", "••", ":"];
-
-        let diagram = format!(
-            "{:>2}\n{}{}{}\n{:>2}",
-            dot[0], dot[1], &self.symbol, dot[1], dot[0]
-        );
-        diagram
-    }
-
-    pub fn orbital_diagram() {}
-
-    pub fn spdf_notation() {}
-
-    pub fn noble_gas_notation() {}
-}
+impl Element {}
 
 //Private associated functions
 impl Element {
