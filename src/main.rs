@@ -82,6 +82,14 @@ fn main() -> core::result::Result<(), io::Error> {
         element.electron_configuration()
     );
 
+    let element = &element_list[117];
+    println!(
+        "Element: {}; Period: {}, Electron configuration: {:?}",
+        element.element,
+        element.period,
+        element.electron_configuration()
+    );
+
     Ok(())
 }
 
