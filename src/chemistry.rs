@@ -36,7 +36,6 @@ pub trait Atom {
     //Electron configuration of atom or molecule
     fn electronic_structure() {}
 }
-
 //Structs (data)
 //Find the minimum amount of information needed for other information to be derived from.
 //E.g Atomic Number (Z) can be derived directly from the number of protons.
@@ -116,14 +115,11 @@ impl Atom for Element {}
 //Public associated functions
 impl Element {
     //Still to decide, whether to create molecules through Atom or Molecule structs, or do something funky with traits
+    //Electron configuration is pre-calculated
     pub fn electron_configuration(&self) -> Vec<i32> {
-        let config = self.precalculated_subshells();
-        config
+        self.precalculated_subshells()
     }
 }
-
-//Impl for different representations of electron configurations
-impl Element {}
 
 //Private associated functions
 impl Element {
@@ -148,8 +144,8 @@ impl Element {
         for num in PRINCIPAL_QUANTUM_NUM_ARRAY.iter() {
             let mut temp_val = 2 * (num.pow(2));
             if element_no_of_electron > temp_val {
-                element_no_of_electron = element_no_of_electron - temp_val;
-                principal_quantum_num = principal_quantum_num + 1;
+                element_no_of_electron -= temp_val;
+                principal_quantum_num += 1;
             } else {
                 remaining_electrons = element_no_of_electron;
                 break;
@@ -200,7 +196,7 @@ impl Element {
                     2 * ((2 * azimthual_quantum_num_slice[*l as usize]) + 1);
 
                 if element_no_of_electrons > electrons_in_subshell {
-                    element_no_of_electrons = element_no_of_electrons - electrons_in_subshell
+                    element_no_of_electrons -= electrons_in_subshell
                 }
             }
         }
@@ -232,7 +228,7 @@ impl Element {
 
         for num in CHEAT_SUBSHELL_NUMS.iter() {
             if num_electrons > *num {
-                num_electrons = num_electrons - *num;
+                num_electrons -= *num;
                 subshell_slice.push(*num)
             } else {
                 remaining_electrons = num_electrons;

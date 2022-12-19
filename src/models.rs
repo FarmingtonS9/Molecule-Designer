@@ -1,5 +1,7 @@
 //File for chemical models needed
 
-pub enum QuantumModels {
-    MolecularOrbitalModel,
-}
+pub trait MolecularOrbitalTheory {}
+
+pub trait ValenceBondTheory: MolecularOrbitalTheory {}
+
+pub trait VSEPR: ValenceBondTheory {}
