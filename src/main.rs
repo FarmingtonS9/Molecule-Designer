@@ -6,10 +6,6 @@ use std::{error::Error, io};
 mod chemistry;
 use crate::chemistry::*;
 
-const OCTET_NUMBER: u32 = 8;
-const PRINCIPLE_ENERGY_LEVEL: [i32; 4] = [1, 2, 3, 4];
-const NOBLE_GAS_ELEMENT_NUMBER: [i32; 7] = [2, 10, 18, 36, 54, 86, 118];
-
 fn main() -> core::result::Result<(), io::Error> {
     println!("Hello, world!");
     println!("I am going to create a Molecule Designer.");
@@ -107,7 +103,7 @@ fn read_csv(file_path: &str) -> Result<Vec<Element>, Box<dyn Error>> {
 }
 
 #[cfg(test)]
-mod tests {
+mod elements {
     use std::vec;
 
     use crate::{
