@@ -1,9 +1,4 @@
 #![allow(unused)]
-/*To do
-- Add enthalpy; determine its effects
-    - First, add Standard Lab Conditions (SLC: Pressure: 1 atm, Temperature: 25(C) degrees/298.15(K))
-    - Likely add the top physical quantities to the physics.rs file
-*/
 
 use na::{DMatrix, Dynamic, Matrix1, VecStorage};
 //Imports
@@ -30,12 +25,6 @@ const CHEAT_SUBSHELL_NUMS: [i32; 19] = [
 ];
 
 //Public
-
-//Traits (shared behaviours/properties)
-pub trait Atom {
-    //Electron configuration of atom or molecule
-    fn electronic_structure() {}
-}
 //Structs (data)
 //Find the minimum amount of information needed for other information to be derived from.
 //E.g Atomic Number (Z) can be derived directly from the number of protons.
@@ -108,9 +97,6 @@ impl Default for Element {
         }
     }
 }
-
-//To complete
-impl Atom for Element {}
 
 //Public associated functions
 impl Element {

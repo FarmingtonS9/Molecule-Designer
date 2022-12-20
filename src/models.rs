@@ -1,7 +1,6 @@
 //File for chemical models needed
 
-pub trait MolecularOrbitalTheory {}
-
-pub trait ValenceBondTheory: MolecularOrbitalTheory {}
-
-pub trait VSEPR: ValenceBondTheory {}
+pub trait LewisStructures {
+    fn valence_electrons() -> i32 {}
+    fn lewis_dot_diagram() {}
+}

@@ -1,10 +1,11 @@
 #![allow(unused)]
 
+use chemistry::elements::*;
 use csv::Reader;
 use std::{error::Error, io};
 
 mod chemistry;
-use crate::chemistry::*;
+use crate::chemistry::elements;
 
 fn main() -> core::result::Result<(), io::Error> {
     println!("Hello, world!");
@@ -103,17 +104,19 @@ fn read_csv(file_path: &str) -> Result<Vec<Element>, Box<dyn Error>> {
 }
 
 #[cfg(test)]
-mod elements {
-    use std::vec;
-
+mod element_tests {
     use crate::{
-        chemistry::{self, Element},
+        chemistry::{
+            self,
+            elements::{self, Element},
+        },
         read_csv,
     };
+    use std::vec;
 
     const FILE_PATH: &str = r"Periodic Table of Elements.csv";
 
-    fn get_element() -> Vec<chemistry::Element> {
+    fn get_element() -> Vec<Element> {
         let element_list = read_csv(FILE_PATH).expect("Could not create element_list.");
         element_list
     }
