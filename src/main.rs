@@ -87,6 +87,8 @@ fn main() -> core::result::Result<(), io::Error> {
         element.electron_configuration()
     );
 
+    element.electron_vector();
+
     Ok(())
 }
 
@@ -105,13 +107,7 @@ fn read_csv(file_path: &str) -> Result<Vec<Element>, Box<dyn Error>> {
 
 #[cfg(test)]
 mod element_tests {
-    use crate::{
-        chemistry::{
-            self,
-            elements::{self, Element},
-        },
-        read_csv,
-    };
+    use crate::{chemistry::elements::*, read_csv};
     use std::vec;
 
     const FILE_PATH: &str = r"Periodic Table of Elements.csv";

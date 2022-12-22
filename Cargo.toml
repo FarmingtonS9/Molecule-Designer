@@ -1,5 +1,5 @@
 [package]
-name = "material-and-process-tracker"
+name = "molecule_designer"
 version = "0.1.0"
 edition = "2021"
 
@@ -12,3 +12,4 @@ serde_json = "1.0"
 rand = { version = "0", default-features = false, features = ["std"]}
 modular = "1"
 nalgebra = "0"
+#intervallum = "1"

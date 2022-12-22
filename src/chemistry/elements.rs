@@ -6,6 +6,8 @@ use nalgebra as na;
 use serde::Deserialize;
 use std::{fmt::Display, vec};
 
+use crate::chemistry::models::*;
+
 //Constants
 //Private
 const SHELL: [&str; 7] = ["K", "L", "M", "N", "O", "P", "Q"];
@@ -68,6 +70,12 @@ struct RawElement {
     pub period: i32,
 }
 
+//Temporary, move to particles file
+#[derive(Debug)]
+pub struct Electron {
+    spin: bool,
+}
+
 impl Display for Element {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
@@ -105,7 +113,24 @@ impl Element {
     pub fn electron_configuration(&self) -> Vec<i32> {
         self.precalculated_subshells()
     }
+
+    pub fn electron_vector(&self) {
+        let mut vector: Vec<&Electron> = Vec::new();
+        let list = [
+            Electron { spin: true },
+            Electron { spin: false },
+            Electron { spin: true },
+        ];
+        for e in list.iter() {
+            vector.push(e)
+        }
+        println!("Vector of electrons: {:?}", vector)
+    }
 }
+
+//Traits implemented for Element
+//Lewis Structures
+impl LewisStructures for Element {}
 
 //Private associated functions
 impl Element {

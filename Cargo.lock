@@ -99,18 +99,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "db6d7e329c562c5dfab7a46a2afabc8b987ab9a4834c9d1ca04dc54c1546cef8"
 
 [[package]]
-name = "material-and-process-tracker"
-version = "0.1.0"
-dependencies = [
- "csv",
- "modular",
- "nalgebra",
- "rand",
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "matrixmultiply"
 version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -130,6 +118,18 @@ name = "modular"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9c2b869408c1be1a4bb10a04220876741ff86dce5b616306ec59ee65fa69c171"
+
+[[package]]
+name = "molecule_designer"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "modular",
+ "nalgebra",
+ "rand",
+ "serde",
+ "serde_json",
+]
 
 [[package]]
 name = "nalgebra"

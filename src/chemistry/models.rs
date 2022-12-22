@@ -5,4 +5,5 @@ pub trait LewisStructures {
         todo!()
     }
     fn lewis_dot_diagram() {}
+    fn formal_charge() {}
 }
