@@ -87,8 +87,6 @@ fn main() -> core::result::Result<(), io::Error> {
         element.electron_configuration()
     );
 
-    element.electron_vector();
-
     Ok(())
 }
 

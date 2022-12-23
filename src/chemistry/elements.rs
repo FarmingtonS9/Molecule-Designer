@@ -113,19 +113,6 @@ impl Element {
     pub fn electron_configuration(&self) -> Vec<i32> {
         self.precalculated_subshells()
     }
-
-    pub fn electron_vector(&self) {
-        let mut vector: Vec<&Electron> = Vec::new();
-        let list = [
-            Electron { spin: true },
-            Electron { spin: false },
-            Electron { spin: true },
-        ];
-        for e in list.iter() {
-            vector.push(e)
-        }
-        println!("Vector of electrons: {:?}", vector)
-    }
 }
 
 //Traits implemented for Element
