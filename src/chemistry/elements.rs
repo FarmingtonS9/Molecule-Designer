@@ -236,6 +236,12 @@ impl Element {
         }
         subshell_slice
     }
+
+    //Constructing matrix
+    //Size of matrix N = period * period
+    //Selecting element position in matrix is N[(r - 1, c - 1)], where r/c are max values of n (the Element's period)
+    //Retrieve a slice; set Madelung's number to (n + l) - 1, retrieve coordinates where equal to Madelung's number
+    //
 }
 
 #[derive(Debug)]

@@ -1,13 +1,14 @@
 #![allow(unused)]
 
-use chemistry::elements::*;
 use csv::Reader;
+use na::*;
+use nalgebra as na;
 use std::{error::Error, io};
 
 mod chemistry;
-use crate::chemistry::elements;
+use chemistry::elements::*;
 
-fn main() -> core::result::Result<(), io::Error> {
+fn main() -> Result<(), io::Error> {
     println!("Hello, world!");
     println!("I am going to create a Molecule Designer.");
     println!("Why? Because I want to create molecules using the ideas of chemistry and physics. I want to do this to explore the fields of chemistry and physics. Eventually, I would love to keep track of materials and their associated processes.");
@@ -85,6 +86,38 @@ fn main() -> core::result::Result<(), io::Error> {
         element.element,
         element.period,
         element.electron_configuration()
+    );
+
+    let array = [1, 2, 3, 4, 5, 6];
+
+    let mut matrix = DMatrix::from_iterator(3, 2, array.iter().cloned());
+    println!("Matrix: {:?}", matrix);
+    matrix[(0, 1)] = -13;
+    println!("Matrix: {:?}", matrix);
+
+    let mut electron_configuration_vector: Vec<i32> = Vec::new();
+    let argon = &element_list[17]; //Argon
+    let mut n_matrix: DMatrix<i32> =
+        DMatrix::from_element(argon.period as usize, argon.period as usize, 0);
+    for column in 0..argon.period as usize {
+        for row in 0..argon.period as usize {
+            if row >= column {
+                n_matrix[(row, column)] = 2 * ((column as i32 * 2) + 1)
+            } else {
+                n_matrix[(row, column)] = 0
+            }
+        }
+    }
+
+    let madelungs_num = argon.period;
+    for n in 0..madelungs_num {
+        let n = n as usize;
+        electron_configuration_vector.push(n_matrix[(0, n)]);
+        electron_configuration_vector.push(n_matrix[(n, 0)]);
+    }
+    println!(
+        "Argon matrix: {:?}, Electron config: {:?}",
+        n_matrix, electron_configuration_vector
     );
 
     Ok(())
