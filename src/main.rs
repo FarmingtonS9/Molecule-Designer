@@ -96,7 +96,7 @@ fn main() -> Result<(), io::Error> {
     println!("Matrix: {:?}", matrix);
 
     let mut electron_configuration_vector: Vec<i32> = Vec::new();
-    let argon = &element_list[17]; //Argon
+    let argon = &element_list[57]; //Argon
     let mut n_matrix: DMatrix<i32> =
         DMatrix::from_element(argon.period as usize, argon.period as usize, 0);
     for column in 0..argon.period as usize {
@@ -116,8 +116,8 @@ fn main() -> Result<(), io::Error> {
         electron_configuration_vector.push(n_matrix[(n, 0)]);
     }
     println!(
-        "Argon matrix: {:?}, Electron config: {:?}",
-        n_matrix, electron_configuration_vector
+        "{} matrix: {:?}, Electron config: {:?}",
+        argon.element, n_matrix, electron_configuration_vector
     );
 
     Ok(())
