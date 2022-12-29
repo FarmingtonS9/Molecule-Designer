@@ -113,6 +113,18 @@ impl Element {
     pub fn electron_configuration(&self) -> Vec<i32> {
         self.precalculated_subshells()
     }
+
+    pub fn test_data(&self) {
+        let sum: i32 = self.electron_configuration().iter().sum();
+        println!(
+            "Element: {}; Atomic Number: {}, Period: {}, Electron configuration: {:?} -> Sum: {}",
+            self.element,
+            self.atomic_num,
+            self.period,
+            self.electron_configuration(),
+            sum
+        );
+    }
 }
 
 //Traits implemented for Element

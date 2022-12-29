@@ -17,12 +17,7 @@ fn main() -> Result<(), io::Error> {
     let element_list = read_csv(file_path).expect("Could not create element_list.");
 
     let element = &element_list[0];
-    println!(
-        "Element: {}; Period: {}, Electron configuration: {:?}",
-        element.element,
-        element.period,
-        element.electron_configuration()
-    );
+    element.test_data();
 
     let element = &element_list[1];
     println!(
@@ -33,60 +28,25 @@ fn main() -> Result<(), io::Error> {
     );
 
     let element = &element_list[4];
-    println!(
-        "Element: {}; Period: {}, Electron configuration: {:?}",
-        element.element,
-        element.period,
-        element.electron_configuration()
-    );
+    element.test_data();
 
     let element = &element_list[6];
-    println!(
-        "Element: {}; Period: {}, Electron configuration: {:?}",
-        element.element,
-        element.period,
-        element.electron_configuration()
-    );
+    element.test_data();
 
     let element = &element_list[9];
-    println!(
-        "Element: {}; Period: {}, Electron configuration: {:?}",
-        element.element,
-        element.period,
-        element.electron_configuration()
-    );
+    element.test_data();
 
     let element = &element_list[16];
-    println!(
-        "Element: {}; Period: {}, Electron configuration: {:?}",
-        element.element,
-        element.period,
-        element.electron_configuration()
-    );
+    element.test_data();
 
     let element = &element_list[25];
-    println!(
-        "Element: {}; Period: {}, Electron configuration: {:?}",
-        element.element,
-        element.period,
-        element.electron_configuration()
-    );
+    element.test_data();
 
     let element = &element_list[36];
-    println!(
-        "Element: {}; Period: {}, Electron configuration: {:?}",
-        element.element,
-        element.period,
-        element.electron_configuration()
-    );
+    element.test_data();
 
     let element = &element_list[117];
-    println!(
-        "Element: {}; Period: {}, Electron configuration: {:?}",
-        element.element,
-        element.period,
-        element.electron_configuration()
-    );
+    element.test_data();
 
     let array = [1, 2, 3, 4, 5, 6];
 
@@ -96,9 +56,28 @@ fn main() -> Result<(), io::Error> {
     println!("Matrix: {:?}", matrix);
 
     let mut electron_configuration_vector: Vec<i32> = Vec::new();
-    let argon = &element_list[57]; //Argon
+    let argon = &element_list[17]; //Argon
     let mut n_matrix: DMatrix<i32> =
         DMatrix::from_element(argon.period as usize, argon.period as usize, 0);
+
+    let mut row: usize;
+    let mut column: usize;
+    for n in 0..argon.period as usize {
+        row = 0;
+        column = n - row;
+        println!(
+            "Period: {}, Position: {:?}, Element at position: {}",
+            argon.period,
+            (row, column),
+            n_matrix[(row, column)]
+        );
+        for j in 0..column {
+            row = column - j;
+            let position = (row, column);
+            println!("row number = {}, position: {:?}", row, position)
+        }
+    }
+
     for column in 0..argon.period as usize {
         for row in 0..argon.period as usize {
             if row >= column {
@@ -109,7 +88,7 @@ fn main() -> Result<(), io::Error> {
         }
     }
 
-    let madelungs_num = argon.period;
+    let madelungs_num = argon.period; //Not actually Madelung's number
     for n in 0..madelungs_num {
         let n = n as usize;
         electron_configuration_vector.push(n_matrix[(0, n)]);
