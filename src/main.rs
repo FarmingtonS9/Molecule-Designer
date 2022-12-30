@@ -56,48 +56,32 @@ fn main() -> Result<(), io::Error> {
     println!("Matrix: {:?}", matrix);
 
     let mut electron_configuration_vector: Vec<i32> = Vec::new();
-    let argon = &element_list[17]; //Argon
+    let argon = &element_list[41]; //Molybdenum
     let mut n_matrix: DMatrix<i32> =
         DMatrix::from_element(argon.period as usize, argon.period as usize, 0);
 
+    println!("Element: {}, Period: {}", argon.element, argon.period);
     let mut row: usize;
     let mut column: usize;
     for n in 0..argon.period as usize {
         row = 0;
         column = n - row;
-        println!(
-            "Period: {}, Position: {:?}, Element at position: {}",
-            argon.period,
-            (row, column),
-            n_matrix[(row, column)]
-        );
-        for j in 0..column {
-            row = column - j;
+        for j in 0..(n + 1) {
+            row = j;
+            column = n - j;
             let position = (row, column);
-            println!("row number = {}, position: {:?}", row, position)
-        }
-    }
-
-    for column in 0..argon.period as usize {
-        for row in 0..argon.period as usize {
             if row >= column {
-                n_matrix[(row, column)] = 2 * ((column as i32 * 2) + 1)
-            } else {
-                n_matrix[(row, column)] = 0
+                n_matrix[(position)] = 2 * ((column as i32 * 2) + 1);
             }
+            println!(
+                "row number = {}, column number = {}, position: {:?}, value at position: {}",
+                row,
+                column,
+                position,
+                n_matrix[(position)]
+            )
         }
     }
-
-    let madelungs_num = argon.period; //Not actually Madelung's number
-    for n in 0..madelungs_num {
-        let n = n as usize;
-        electron_configuration_vector.push(n_matrix[(0, n)]);
-        electron_configuration_vector.push(n_matrix[(n, 0)]);
-    }
-    println!(
-        "{} matrix: {:?}, Electron config: {:?}",
-        argon.element, n_matrix, electron_configuration_vector
-    );
 
     Ok(())
 }
