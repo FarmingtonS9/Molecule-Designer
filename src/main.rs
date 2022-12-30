@@ -20,12 +20,7 @@ fn main() -> Result<(), io::Error> {
     element.test_data();
 
     let element = &element_list[1];
-    println!(
-        "Element: {}; Period: {},  Electron configuration: {:?}",
-        element.element,
-        element.period,
-        element.electron_configuration()
-    );
+    element.test_data();
 
     let element = &element_list[4];
     element.test_data();
@@ -56,22 +51,25 @@ fn main() -> Result<(), io::Error> {
     println!("Matrix: {:?}", matrix);
 
     let mut electron_configuration_vector: Vec<i32> = Vec::new();
-    let argon = &element_list[41]; //Molybdenum
+    let argon = &element_list[9]; //Neon
     let mut n_matrix: DMatrix<i32> =
         DMatrix::from_element(argon.period as usize, argon.period as usize, 0);
 
     println!("Element: {}, Period: {}", argon.element, argon.period);
     let mut row: usize;
     let mut column: usize;
+    //Remember, n is the principal quantum number, which is equalavent to the element's period
     for n in 0..argon.period as usize {
-        row = 0;
-        column = n - row;
-        for j in 0..(n + 1) {
+        println!("n = {}", n);
+        for j in 0..n {
             row = j;
-            column = n - j;
+            column = n - row;
             let position = (row, column);
             if row >= column {
                 n_matrix[(position)] = 2 * ((column as i32 * 2) + 1);
+            }
+            if n_matrix[(position)] != 0 {
+                electron_configuration_vector.push(n_matrix[(position)])
             }
             println!(
                 "row number = {}, column number = {}, position: {:?}, value at position: {}",
@@ -82,6 +80,11 @@ fn main() -> Result<(), io::Error> {
             )
         }
     }
+
+    println!(
+        "Electron configuration: {:?}",
+        electron_configuration_vector
+    );
 
     Ok(())
 }
