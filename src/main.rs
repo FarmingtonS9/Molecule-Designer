@@ -6,6 +6,7 @@ use nalgebra as na;
 use std::{error::Error, io};
 
 mod chemistry;
+pub mod physics;
 use chemistry::elements::*;
 
 fn main() -> Result<(), io::Error> {
@@ -50,37 +51,60 @@ fn main() -> Result<(), io::Error> {
     matrix[(0, 1)] = -13;
     println!("Matrix: {:?}", matrix);
 
-    let mut electron_configuration_vector: Vec<i32> = Vec::new();
-    let argon = &element_list[9]; //Neon
+    let element = &element_list[17]; //Argon
     let mut n_matrix: DMatrix<i32> =
-        DMatrix::from_element(argon.period as usize, argon.period as usize, 0);
+        DMatrix::from_element(element.period as usize, element.period as usize, 0);
 
-    println!("Element: {}, Period: {}", argon.element, argon.period);
+    let mut electron_configuration_vector: Vec<i32> = Vec::new();
+    let mut remaining_electrons = element.num_of_electrons;
+
+    println!("Element: {}, Period: {}", element.element, element.period);
+    println!("N-matrix {:?}", n_matrix);
     let mut row: usize;
     let mut column: usize;
     //Remember, n is the principal quantum number, which is equalavent to the element's period
-    for n in 0..argon.period as usize {
+    for n in 0..element.period as usize {
         println!("n = {}", n);
-        for j in 0..n {
+        for j in 0..(n + 1) {
+            //sets the position based off where in the loop it is.
+            //The combined values of row and column equal to n
+            //Row increments with j; column decrements from n
             row = j;
             column = n - row;
             let position = (row, column);
+            //Checks if position is in the lower triangular matrix
             if row >= column {
-                n_matrix[(position)] = 2 * ((column as i32 * 2) + 1);
+                //Calculates the number of electrons based on l (column)
+                let electron_num = 2 * ((column as i32 * 2) + 1);
+                //Checks if remaining number of electrons is less than the calculated value
+                //If so, the calculated value is replaced with remaining number of electrons
+                //Else, position keeps the calculated value and subtracts that vaule from remaining number of electrons
+                if remaining_electrons < electron_num {
+                    n_matrix[(position)] = remaining_electrons;
+                } else {
+                    n_matrix[(position)] = electron_num;
+                    remaining_electrons -= electron_num;
+                }
             }
+            //Adds the value at position to the electron configuration if value does not equal zero
             if n_matrix[(position)] != 0 {
                 electron_configuration_vector.push(n_matrix[(position)])
             }
             println!(
-                "row number = {}, column number = {}, position: {:?}, value at position: {}",
+                "row number = {}, column number = {}, remaining electrons = {} position: {:?}, value at position: {}",
                 row,
                 column,
+                remaining_electrons,
                 position,
                 n_matrix[(position)]
             )
         }
+        if n == (element.period - 1) as usize && remaining_electrons > 0 {
+            electron_configuration_vector.push(remaining_electrons)
+        }
     }
 
+    println!("N-Matrix: {:?}", n_matrix);
     println!(
         "Electron configuration: {:?}",
         electron_configuration_vector
