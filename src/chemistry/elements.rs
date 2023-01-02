@@ -114,9 +114,10 @@ impl Element {
         self.electron_configuration_v2()
     }
 
-    //First attempt
-    //Uses for loops to keep track of position in matrix
-    pub fn electron_configuration_v1(&self) {
+    //Second attempt
+    //Uses properties of matrices to calculate values in the lower triangular matrix
+    //I.e Using division and iteration to keep track of position
+    pub fn electron_configuration_v2(&self) -> Vec<i32> {
         let element = self;
         let mut n_matrix: DMatrix<i32> =
             DMatrix::from_element(element.period as usize, element.period as usize, 0);
@@ -124,78 +125,6 @@ impl Element {
         let mut electron_configuration_vector: Vec<i32> = Vec::new();
         let mut remaining_electrons = element.num_of_electrons;
 
-        println!("Element: {}, Period: {}", element.element, element.period);
-        println!("N-matrix {:?}", n_matrix);
-        let mut row: usize = 0;
-        let mut column: usize = 0;
-        let mut position: (usize, usize) = (0, 0);
-        //Remember, n is the principal quantum number, which is equalavent to the element's period
-        for n in 0..element.period as usize {
-            println!("n = {}", n);
-            for j in 0..(n + 1) {
-                //sets the position based off where in the loop it is.
-                //The combined values of row and column equal to n
-                //Row increments with j; column decrements from n
-                row = j;
-                column = n - row;
-                position = (row, column);
-                //Checks if position is in the lower triangular matrix
-                if row >= column {
-                    //Calculates the number of electrons based on l (column)
-                    let electron_num = 2 * ((column as i32 * 2) + 1);
-                    //Checks if remaining number of electrons is less than the calculated value
-                    //If so, the calculated value is replaced with remaining number of electrons
-                    //Else, position keeps the calculated value and subtracts that vaule from remaining number of electrons
-                    if remaining_electrons < electron_num {
-                        n_matrix[(position)] = remaining_electrons;
-                    } else {
-                        if n == element.period as usize {
-                            column = element.period as usize / 2; //Should automatically round down if numerator is odd since it is not a float
-                            row = element.period as usize - column
-                        }
-                        n_matrix[(position)] = electron_num;
-                        remaining_electrons -= electron_num;
-                    }
-                }
-                //Adds the value at position to the electron configuration if value does not equal zero
-                if n_matrix[(position)] != 0 {
-                    electron_configuration_vector.push(n_matrix[(position)])
-                }
-                println!(
-                    "row number = {}, column number = {}, remaining electrons = {} position: {:?}, value at position: {}",
-                    row,
-                    column,
-                    remaining_electrons,
-                    position,
-                    n_matrix[(position)]
-                )
-            }
-        }
-
-        println!(
-            "N-Matrix: {:?}, N-Matrix value = {}",
-            n_matrix,
-            n_matrix.sum()
-        );
-        println!(
-            "Electron configuration: {:?}",
-            electron_configuration_vector
-        );
-    }
-
-    //Second attempt
-    //Uses properties of matrices to calculate values in the lower triangular matrix
-    //I.e Using division and iteration to keep track of position
-    pub fn electron_configuration_v2(&self) -> Vec<i32> {
-        let element = self; //Argon
-        let mut n_matrix: DMatrix<i32> =
-            DMatrix::from_element(element.period as usize, element.period as usize, 0);
-
-        let mut electron_configuration_vector: Vec<i32> = Vec::new();
-        let mut remaining_electrons = element.num_of_electrons;
-
-        println!("Element: {}, Period: {}", element.element, element.period);
-        println!("N-matrix {:?}", n_matrix);
         let mut row: usize = 0;
         let mut column: usize = 0;
         let mut position: (usize, usize) = (0, 0);
@@ -212,6 +141,7 @@ impl Element {
                 position = (row, column);
 
                 //A check to ensure row value doesn't try to access matrix out of bounds
+                //And checks if remaining electrons are zero; issue with loop continuing to calculate even when there were no electrons
                 //Skips this iteration of for loop
                 if row == element.period as usize || remaining_electrons == 0 {
                     continue;
