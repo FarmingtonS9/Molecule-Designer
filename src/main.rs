@@ -44,72 +44,6 @@ fn main() -> Result<(), io::Error> {
     let element = &element_list[117];
     element.test_data();
 
-    let array = [1, 2, 3, 4, 5, 6];
-
-    let mut matrix = DMatrix::from_iterator(3, 2, array.iter().cloned());
-    println!("Matrix: {:?}", matrix);
-    matrix[(0, 1)] = -13;
-    println!("Matrix: {:?}", matrix);
-
-    let element = &element_list[53]; //Xenon
-    let mut n_matrix: DMatrix<i32> =
-        DMatrix::from_element(element.period as usize, element.period as usize, 0);
-
-    let mut electron_configuration_vector: Vec<i32> = Vec::new();
-    let mut remaining_electrons = element.num_of_electrons;
-
-    println!("Element: {}, Period: {}", element.element, element.period);
-    println!("N-matrix {:?}", n_matrix);
-    let mut row: usize = 0;
-    let mut column: usize = 0;
-    let mut position: (usize, usize) = (0, 0);
-    //Remember, n is the principal quantum number, which is equalavent to the element's period
-    for n in 0..(element.period + 1) as usize {
-        column = n / 2;
-        row = n - column;
-        position = (row, column);
-        n_matrix[(position)] = 2 * ((column as i32 * 2) + 1);
-        println!(
-            "row = {}, column = {}, n = {}, position = {:?}, val at pos = {:?}",
-            row,
-            column,
-            n,
-            position,
-            n_matrix[(position)]
-        );
-        let range = column + 1;
-        for j in 0..range {
-            column -= j;
-            row += j;
-            position = (row, column);
-            n_matrix[(position)] = 2 * ((column as i32 * 2) + 1);
-            println!(
-                "row = {}, column = {}, n = {}, j = {}, range = {}, position = {:?}, val at postion = {}",
-                row,
-                column,
-                n,
-                j,
-                range,
-                position,
-                n_matrix[(position)]
-            );
-        }
-    }
-
-    println!(
-        "N-Matrix: {:?}, N-Matrix value = {}",
-        n_matrix,
-        n_matrix.sum()
-    );
-    println!(
-        "Electron configuration: {:?}",
-        electron_configuration_vector
-    );
-
-    let value = 5 as usize;
-    let calc_value = value / 2;
-    println!("value = {}, calc_value = {}", value, calc_value);
-
     Ok(())
 }
 
@@ -153,11 +87,25 @@ mod element_tests {
         assert_eq!(vec![2], element.electron_configuration())
     }
     #[test]
+    fn lithium() {
+        let element_list = get_element();
+        let element = &element_list[2];
+        assert_eq!("Lithium".to_string(), element.element);
+        assert_eq!(vec![2, 1], element.electron_configuration())
+    }
+    #[test]
     fn boron() {
         let element_list = get_element();
         let element = &element_list[4];
         assert_eq!("Boron".to_string(), element.element);
         assert_eq!(vec![2, 2, 1], element.electron_configuration())
+    }
+    #[test]
+    fn carbon() {
+        let element_list = get_element();
+        let element = &element_list[5];
+        assert_eq!("Carbon".to_string(), element.element);
+        assert_eq!(vec![2, 2, 2], element.electron_configuration())
     }
     #[test]
     fn nitrogen() {
@@ -172,6 +120,34 @@ mod element_tests {
         let element = &element_list[9];
         assert_eq!("Neon".to_string(), element.element);
         assert_eq!(vec![2, 2, 6], element.electron_configuration())
+    }
+    #[test]
+    fn sodium() {
+        let element_list = get_element();
+        let element = &element_list[10];
+        assert_eq!("Sodium".to_string(), element.element);
+        assert_eq!(vec![2, 2, 6, 1], element.electron_configuration())
+    }
+    #[test]
+    fn magnesium() {
+        let element_list = get_element();
+        let element = &element_list[11];
+        assert_eq!("Magnesium".to_string(), element.element);
+        assert_eq!(vec![2, 2, 6, 2], element.electron_configuration())
+    }
+    #[test]
+    fn potassium() {
+        let element_list = get_element();
+        let element = &element_list[18];
+        assert_eq!("Potassium".to_string(), element.element);
+        assert_eq!(vec![2, 2, 6, 2, 6, 1], element.electron_configuration())
+    }
+    #[test]
+    fn iron() {
+        let element_list = get_element();
+        let element = &element_list[25];
+        assert_eq!("Iron".to_string(), element.element);
+        assert_eq!(vec![2, 2, 6, 2, 6, 2, 6], element.electron_configuration())
     }
 
     #[test]

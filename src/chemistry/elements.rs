@@ -111,7 +111,7 @@ impl Element {
     //Still to decide, whether to create molecules through Atom or Molecule structs, or do something funky with traits
     //Electron configuration is pre-calculated
     pub fn electron_configuration(&self) -> Vec<i32> {
-        self.precalculated_subshells()
+        self.electron_configuration_v2()
     }
 
     //First attempt
@@ -186,6 +186,58 @@ impl Element {
     //Second attempt
     //Uses properties of matrices to calculate values in the lower triangular matrix
     //I.e Using division and iteration to keep track of position
+    pub fn electron_configuration_v2(&self) -> Vec<i32> {
+        let element = self; //Argon
+        let mut n_matrix: DMatrix<i32> =
+            DMatrix::from_element(element.period as usize, element.period as usize, 0);
+
+        let mut electron_configuration_vector: Vec<i32> = Vec::new();
+        let mut remaining_electrons = element.num_of_electrons;
+
+        println!("Element: {}, Period: {}", element.element, element.period);
+        println!("N-matrix {:?}", n_matrix);
+        let mut row: usize = 0;
+        let mut column: usize = 0;
+        let mut position: (usize, usize) = (0, 0);
+        //Remember, n is the principal quantum number, which is equalavent to the element's period
+        for n in 0..(element.period + 1) as usize {
+            column = n / 2;
+            row = n - column;
+            position = (row, column);
+
+            for j in 0..column + 1 {
+                //Sets the position within the matrix
+                let column = column - j;
+                let row = row + j;
+                position = (row, column);
+
+                //A check to ensure row value doesn't try to access matrix out of bounds
+                //Skips this iteration of for loop
+                if row == element.period as usize || remaining_electrons == 0 {
+                    continue;
+                }
+
+                //Logic
+                //Calculates the remaining electrons left in this subshell
+                n_matrix[(position)] = 2 * ((column as i32 * 2) + 1);
+                //If there are more remaining electrons than the calculated value
+                if remaining_electrons > n_matrix[(position)] {
+                    //Add the calculated value to the electron configuration vector
+                    electron_configuration_vector.push(n_matrix[(position)]);
+                    //Subtract calculated value from the remaining electrons
+                    remaining_electrons -= n_matrix[(position)]
+                } else {
+                    //Set the element in the matrix to the remaining electrons
+                    n_matrix[(position)] = remaining_electrons;
+                    //Take the remaining electrons away
+                    remaining_electrons -= remaining_electrons;
+                    //Set the last element of the electron vector to the remaining electrons
+                    electron_configuration_vector.push(n_matrix[(position)]);
+                };
+            }
+        }
+        electron_configuration_vector
+    }
 
     pub fn test_data(&self) {
         let sum: i32 = self.electron_configuration().iter().sum();
