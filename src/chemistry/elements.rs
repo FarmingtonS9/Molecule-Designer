@@ -114,10 +114,47 @@ impl Element {
         self.electron_configuration_v2()
     }
 
-    //Second attempt
-    //Uses properties of matrices to calculate values in the lower triangular matrix
-    //I.e Using division and iteration to keep track of position
-    pub fn electron_configuration_v2(&self) -> Vec<i32> {
+    pub fn test_data(&self) {
+        let sum: i32 = self.electron_configuration().iter().sum();
+        println!(
+            "Element: {}; Atomic Number: {}, Period: {}, Electron configuration: {:?} -> Sum: {}",
+            self.element,
+            self.atomic_num,
+            self.period,
+            self.electron_configuration(),
+            sum
+        );
+    }
+}
+
+//Traits implemented for Element
+//Lewis Structures
+impl LewisStructures for Element {}
+
+//Private associated functions
+impl Element {
+    //Cheat/precalculated subshell numbers.
+    fn precalculated_subshells(&self) -> Vec<i32> {
+        let mut num_electrons = self.num_of_electrons;
+        let mut remaining_electrons = 0;
+        let mut subshell_slice: Vec<i32> = Vec::new();
+
+        for num in CHEAT_SUBSHELL_NUMS.iter() {
+            if num_electrons > *num {
+                num_electrons -= *num;
+                subshell_slice.push(*num)
+            } else {
+                remaining_electrons = num_electrons;
+                subshell_slice.push(remaining_electrons);
+                break;
+            }
+        }
+        subshell_slice
+    }
+
+    //Algorithm for calculating electron configuration
+    //Doesn't take into account edge cases; just calculates config based on number of electrons and the atomic period
+    fn electron_configuration_v2(&self) -> Vec<i32> {
         let element = self;
         let mut n_matrix: DMatrix<i32> =
             DMatrix::from_element(element.period as usize, element.period as usize, 0);
@@ -168,147 +205,6 @@ impl Element {
         }
         electron_configuration_vector
     }
-
-    pub fn test_data(&self) {
-        let sum: i32 = self.electron_configuration().iter().sum();
-        println!(
-            "Element: {}; Atomic Number: {}, Period: {}, Electron configuration: {:?} -> Sum: {}",
-            self.element,
-            self.atomic_num,
-            self.period,
-            self.electron_configuration(),
-            sum
-        );
-    }
-}
-
-//Traits implemented for Element
-//Lewis Structures
-impl LewisStructures for Element {}
-
-//Private associated functions
-impl Element {
-    //NEW, UPDATED, ROBUST algorithms here.
-    //Madelung Rule
-    //n + l = subshell energy, determines order with lower n values preferred first in case of repeated values
-    //May not need this function
-    fn madelung_num(principal_num: i32, azimuthal_num: i32) -> i32 {
-        principal_num + azimuthal_num
-    }
-
-    //Determine shell
-    fn det_shell(&self) -> (i32, i32) {
-        //Element's number of shells
-        let mut element_no_of_electron = self.num_of_electrons;
-        let mut principal_quantum_num = 1;
-        let mut remaining_electrons: i32 = 0;
-        //Figure out the shell, iterating(?) until element's electrons are exhausted
-        //Calculate first element in PRINCIPAL_QUANTUM_NUM array using 2*n^2
-        //Subtract this value from Element's electrons
-        //Repeat until Element's electrons is less than calculated value
-        for num in PRINCIPAL_QUANTUM_NUM_ARRAY.iter() {
-            let mut temp_val = 2 * (num.pow(2));
-            if element_no_of_electron > temp_val {
-                element_no_of_electron -= temp_val;
-                principal_quantum_num += 1;
-            } else {
-                remaining_electrons = element_no_of_electron;
-                break;
-            }
-        }
-        //Output principal quantum number and remaining electrons
-        (principal_quantum_num, remaining_electrons)
-    }
-
-    //Determine subshell, based on det_shell()
-    fn det_subshell(&self) {
-        //Values passed from det_shell() function
-        let shell_tuple = self.det_shell();
-        //Resulting values
-        let principal_quantum_num = shell_tuple.0;
-        let mut element_no_of_electrons = self.num_of_electrons;
-
-        //Create slice of principal quantum numbers
-        let principal_quantum_num_slice =
-            &PRINCIPAL_QUANTUM_NUM_ARRAY[..principal_quantum_num as usize];
-
-        //Iterate over each element in the principal quantum number (n) slice
-        //Each iteration over n, then iterate over the azimuthal quantum number slice
-        //To calculate the corresponding maximum number of electrons per subshell
-        //
-        //Equation: 2 * ((2 * l) + 1)
-        //Vector to hold max no. of electrons per subshell
-        let mut madelung_num_vector: Vec<usize> = Vec::new();
-        let mut azimuthal_num_vector: Vec<i32> = Vec::new();
-
-        for n in principal_quantum_num_slice.iter() {
-            //n determines where we are in the principal slice
-            //
-            //At each value of n, enter l and generate max no. of electrons
-            //Take a slice of the azimuthal quantum number (l) array based on the principal quantum number (n)
-            let azimthual_quantum_num_slice = &AZIMUTHAL_QUANTUM_NUM_ARRAY[..(*n as usize)];
-
-            for l in azimthual_quantum_num_slice.iter() {
-                //Add azithumal number to vector
-                azimuthal_num_vector.push(*l);
-
-                //Madelung's number
-                let madelungs_num = (*n + azimthual_quantum_num_slice[*l as usize]) as usize;
-                madelung_num_vector.push(madelungs_num);
-
-                //
-                let electrons_in_subshell =
-                    2 * ((2 * azimthual_quantum_num_slice[*l as usize]) + 1);
-
-                if element_no_of_electrons > electrons_in_subshell {
-                    element_no_of_electrons -= electrons_in_subshell
-                }
-            }
-        }
-
-        let electron_config = self.precalculated_subshells();
-
-        //2nd attempt;
-        let principal_num = self.period;
-        let mut azimuthal_num = 0;
-        let mut num_subshell_electrons = 0;
-        let principal_num_array = &PRINCIPAL_QUANTUM_NUM_ARRAY[..principal_num as usize];
-
-        println!(
-            "Principal quantum number: {}, electrons in outer shell: {}, azimuthal quantum number: {:?}, Madelung's numbers: {:?}, electron configuration: {:?}",
-            principal_quantum_num,
-            electron_config.last().unwrap(),
-            azimuthal_num_vector,
-            madelung_num_vector,
-            electron_config
-        )
-    }
-
-    //Cheat/precalculated subshell numbers.
-    //Will need to come back and try to create this algorithm properly
-    fn precalculated_subshells(&self) -> Vec<i32> {
-        let mut num_electrons = self.num_of_electrons;
-        let mut remaining_electrons = 0;
-        let mut subshell_slice: Vec<i32> = Vec::new();
-
-        for num in CHEAT_SUBSHELL_NUMS.iter() {
-            if num_electrons > *num {
-                num_electrons -= *num;
-                subshell_slice.push(*num)
-            } else {
-                remaining_electrons = num_electrons;
-                subshell_slice.push(remaining_electrons);
-                break;
-            }
-        }
-        subshell_slice
-    }
-
-    //Constructing matrix
-    //Size of matrix N = period * period
-    //Selecting element position in matrix is N[(r - 1, c - 1)], where r/c are max values of n (the Element's period)
-    //Retrieve a slice; set Madelung's number to (n + l) - 1, retrieve coordinates where equal to Madelung's number
-    //
 }
 
 #[derive(Debug)]
