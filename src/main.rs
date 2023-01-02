@@ -51,7 +51,7 @@ fn main() -> Result<(), io::Error> {
     matrix[(0, 1)] = -13;
     println!("Matrix: {:?}", matrix);
 
-    let element = &element_list[17]; //Argon
+    let element = &element_list[53]; //Xenon
     let mut n_matrix: DMatrix<i32> =
         DMatrix::from_element(element.period as usize, element.period as usize, 0);
 
@@ -60,55 +60,55 @@ fn main() -> Result<(), io::Error> {
 
     println!("Element: {}, Period: {}", element.element, element.period);
     println!("N-matrix {:?}", n_matrix);
-    let mut row: usize;
-    let mut column: usize;
+    let mut row: usize = 0;
+    let mut column: usize = 0;
+    let mut position: (usize, usize) = (0, 0);
     //Remember, n is the principal quantum number, which is equalavent to the element's period
-    for n in 0..element.period as usize {
-        println!("n = {}", n);
-        for j in 0..(n + 1) {
-            //sets the position based off where in the loop it is.
-            //The combined values of row and column equal to n
-            //Row increments with j; column decrements from n
-            row = j;
-            column = n - row;
-            let position = (row, column);
-            //Checks if position is in the lower triangular matrix
-            if row >= column {
-                //Calculates the number of electrons based on l (column)
-                let electron_num = 2 * ((column as i32 * 2) + 1);
-                //Checks if remaining number of electrons is less than the calculated value
-                //If so, the calculated value is replaced with remaining number of electrons
-                //Else, position keeps the calculated value and subtracts that vaule from remaining number of electrons
-                if remaining_electrons < electron_num {
-                    n_matrix[(position)] = remaining_electrons;
-                } else {
-                    n_matrix[(position)] = electron_num;
-                    remaining_electrons -= electron_num;
-                }
-            }
-            //Adds the value at position to the electron configuration if value does not equal zero
-            if n_matrix[(position)] != 0 {
-                electron_configuration_vector.push(n_matrix[(position)])
-            }
+    for n in 0..(element.period + 1) as usize {
+        column = n / 2;
+        row = n - column;
+        position = (row, column);
+        n_matrix[(position)] = 2 * ((column as i32 * 2) + 1);
+        println!(
+            "row = {}, column = {}, n = {}, position = {:?}, val at pos = {:?}",
+            row,
+            column,
+            n,
+            position,
+            n_matrix[(position)]
+        );
+        let range = column + 1;
+        for j in 0..range {
+            column -= j;
+            row += j;
+            position = (row, column);
+            n_matrix[(position)] = 2 * ((column as i32 * 2) + 1);
             println!(
-                "row number = {}, column number = {}, remaining electrons = {} position: {:?}, value at position: {}",
+                "row = {}, column = {}, n = {}, j = {}, range = {}, position = {:?}, val at postion = {}",
                 row,
                 column,
-                remaining_electrons,
+                n,
+                j,
+                range,
                 position,
                 n_matrix[(position)]
-            )
-        }
-        if n == (element.period - 1) as usize && remaining_electrons > 0 {
-            electron_configuration_vector.push(remaining_electrons)
+            );
         }
     }
 
-    println!("N-Matrix: {:?}", n_matrix);
+    println!(
+        "N-Matrix: {:?}, N-Matrix value = {}",
+        n_matrix,
+        n_matrix.sum()
+    );
     println!(
         "Electron configuration: {:?}",
         electron_configuration_vector
     );
+
+    let value = 5 as usize;
+    let calc_value = value / 2;
+    println!("value = {}, calc_value = {}", value, calc_value);
 
     Ok(())
 }
@@ -172,6 +172,17 @@ mod element_tests {
         let element = &element_list[9];
         assert_eq!("Neon".to_string(), element.element);
         assert_eq!(vec![2, 2, 6], element.electron_configuration())
+    }
+
+    #[test]
+    fn francium() {
+        let element_list = get_element();
+        let element = &element_list[86];
+        assert_eq!("Francium".to_string(), element.element);
+        assert_eq!(
+            vec![2, 2, 6, 2, 6, 2, 10, 6, 2, 10, 6, 2, 14, 10, 6, 1],
+            element.electron_configuration()
+        )
     }
     #[test]
     fn oganesson() {
