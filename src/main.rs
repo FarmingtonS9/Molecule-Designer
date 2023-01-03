@@ -142,12 +142,24 @@ mod element_tests {
         assert_eq!("Potassium".to_string(), element.element);
         assert_eq!(vec![2, 2, 6, 2, 6, 1], element.electron_configuration())
     }
+
     #[test]
     fn iron() {
         let element_list = get_element();
         let element = &element_list[25];
         assert_eq!("Iron".to_string(), element.element);
         assert_eq!(vec![2, 2, 6, 2, 6, 2, 6], element.electron_configuration())
+    }
+    #[test]
+    #[should_panic] //Palladium is an interesting example of shortcomings of Aufbau
+    fn palladium() {
+        let element_list = get_element();
+        let element = &element_list[45];
+        assert_eq!("Palladium".to_string(), element.element);
+        assert_eq!(
+            vec![2, 2, 6, 2, 6, 2, 10, 6, 10],
+            element.electron_configuration()
+        )
     }
 
     #[test]
@@ -159,6 +171,17 @@ mod element_tests {
             vec![2, 2, 6, 2, 6, 2, 10, 6, 2, 10, 6, 2, 14, 10, 6, 1],
             element.electron_configuration()
         )
+    }
+    #[test]
+    #[should_panic] //Electron configuration is incorrectly calculated based on Aufbau principle
+    fn uranium() {
+        let element_list = get_element();
+        let element = &element_list[91];
+        assert_eq!("Uranium".to_string(), element.element);
+        assert_eq!(
+            vec![2, 2, 6, 2, 6, 2, 10, 6, 2, 10, 6, 2, 14, 10, 6, 2, 3, 1],
+            element.electron_configuration()
+        );
     }
     #[test]
     fn oganesson() {
