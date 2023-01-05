@@ -263,4 +263,5 @@ pub enum ElectronConfig {
     SPDFNotation,
     SPDFNotationExpanded,
     NobleGasNotation,
+    LigandField,
 }

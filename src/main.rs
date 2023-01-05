@@ -151,7 +151,10 @@ mod element_tests {
         assert_eq!(vec![2, 2, 6, 2, 6, 2, 6], element.electron_configuration())
     }
     #[test]
-    #[should_panic] //Palladium is an interesting example of shortcomings of Aufbau
+    #[should_panic]
+    //Palladium is an interesting example of shortcomings of Aufbau
+    //Electron configuration is experimentally known as: [2, 2, 6, 2, 6, 2, 10, 6, 10] (correct)
+    //Electron configuration is calculated here as: [2, 2, 6, 2, 6, 2, 10, 6, 2, 8] (incorrect)
     fn palladium() {
         let element_list = get_element();
         let element = &element_list[45];
