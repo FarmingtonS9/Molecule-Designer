@@ -111,7 +111,7 @@ impl Element {
     //Still to decide, whether to create molecules through Atom or Molecule structs, or do something funky with traits
     //Electron configuration is pre-calculated
     pub fn electron_configuration(&self) -> Vec<i32> {
-        self.electron_configuration_v2()
+        self.electron_configuration_madelung()
     }
 
     pub fn test_data(&self) {
@@ -154,7 +154,8 @@ impl Element {
 
     //Algorithm for calculating electron configuration
     //Doesn't take into account edge cases; just calculates config based on number of electrons and the atomic period
-    fn electron_configuration_v2(&self) -> Vec<i32> {
+    //Madelung sequence to building electron configuration
+    fn electron_configuration_madelung(&self) -> Vec<i32> {
         let element = self;
         let mut n_matrix: DMatrix<i32> =
             DMatrix::from_element(element.period as usize, element.period as usize, 0);
@@ -165,7 +166,7 @@ impl Element {
         let mut row: usize = 0;
         let mut column: usize = 0;
         let mut position: (usize, usize) = (0, 0);
-        //Remember, n is the principal quantum number, which is equalavent to the element's period
+        //Remember, n is the principal quantum number, which is equivalent to the element's period
         for n in 0..(element.period + 1) as usize {
             column = n / 2;
             row = n - column;
@@ -204,6 +205,17 @@ impl Element {
             }
         }
         electron_configuration_vector
+    }
+
+    //Atomic Orbital sequence for Hydrogen
+    //1H
+    fn ao_sequence_hydrogen(&self) {
+        let epsilon: f64; //ε
+        let principal_quantum_num: u32; //n
+        let angular_momentum_quantum_num: u32; //l
+        let spin_quantum_num = 0.5; //s = Half spin: 1/2
+        let nuclear_charge: f64; //Z
+        const RYDBERG_NUM: f64 = 1313.; //Ry = 1313 kJ per mol
     }
 }
 

@@ -153,8 +153,9 @@ mod element_tests {
     #[test]
     #[should_panic]
     //Palladium is an interesting example of shortcomings of Aufbau
-    //Electron configuration is experimentally known as: [2, 2, 6, 2, 6, 2, 10, 6, 10] (correct)
-    //Electron configuration is calculated here as: [2, 2, 6, 2, 6, 2, 10, 6, 2, 8] (incorrect)
+    //Electron configuration is experimentally known as: [1s2, 2s2, 2p6, 3s2, 3p6, 4s2, 3d10, 4p6, 4d10] (correct)
+    //Electron configuration is calculated here as: [1s2, 2s2, 2p6, 3s2, 3p6, 4s2, 3d10, 4p6, 5s2, 4d8] (incorrect)
+    //Instead of filling the s subshell, the d subshell is able to be filled completely
     fn palladium() {
         let element_list = get_element();
         let element = &element_list[45];
